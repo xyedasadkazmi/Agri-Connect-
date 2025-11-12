@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <!-- Consultation Form Section -->
+    <div class="col-lg-8">
+      <div class="card consultation-card border-0 shadow-lg">
+        <div class="card-header bg-success text-white py-4 border-0">
+          <div class="d-flex align-items-center">
+            <div class="consultation-icon me-3">
+              <i class="fas fa-user-md fa-2x"></i>
+            </div>
+            <div>
+              <h3 class="mb-1 fw-bold">Consult an Expert</h3>
+              <p class="mb-0 opacity-75">Get professional advice from agricultural specialists</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-body p-4">
+          <form method="POST" class="consultation-form">
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <label class="form-label fw-semibold text-dark mb-2">Farmer Name</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0">
+                    <i class="fas fa-user text-muted"></i>
+                  </span>
+                  <input type="text" name="farmer_name" class="form-control border-start-0" 
+                         value="{{ current_user.name }}" required>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-4">
+                <label class="form-label fw-semibold text-dark mb-2">Email Address</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0">
+                    <i class="fas fa-envelope text-muted"></i>
+                  </span>
+                  <input type="email" name="farmer_email" class="form-control border-start-0" 
+                         value="{{ current_user.email }}" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-semibold text-dark mb-2">Describe Your Challenge</label>
+              <div class="form-floating">
+                <textarea name="problem" class="form-control consultation-textarea" 
+                          placeholder="Explain your issue in detail..." style="height: 140px" required></textarea>
+                <label>Please provide detailed information about your agricultural challenge...</label>
+              </div>
+              <div class="form-text">
+                <i class="fas fa-info-circle me-1 text-muted"></i>
+                Be specific about crops, symptoms, and conditions for better assistance
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-lg w-100 py-3 fw-semibold consultation-submit">
+              <i class="fas fa-paper-plane me-2"></i>Send Expert Request
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Consultation History Section -->
+    <div class="col-lg-4 mt-4 mt-lg-0">
+      <div class="card consultation-history-card border-0 shadow-sm h-100">
+        <div class="card-header bg-light py-3 border-0">
+          <h5 class="mb-0 fw-semibold text-dark">
+            <i class="fas fa-history me-2 text-success"></i>
+            Recent Consultations
+          </h5>
+        </div>
+        
+        <div class="card-body consultation-history-body">
+          {% for c in consultations %}
+            <div class="consultation-item border-bottom pb-3 mb-3">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div class="consultation-user">
+                  <div class="user-avatar bg-success rounded-circle d-inline-flex align-items-center justify-content-center me-2">
+                    <small class="text-white fw-bold">
+                      {{ c.farmer_name[0] if c.farmer_name else 'U' }}
+                    </small>
+                  </div>
+                  <strong class="text-dark">{{ c.farmer_name }}</strong>
+                </div>
+                <span class="consultation-date badge bg-light text-muted">
+                  <i class="far fa-clock me-1"></i>{{ c.created_at.strftime('%b %d, %Y') }}
+                </span>
+              </div>
+              <p class="consultation-preview text-muted mb-0">
+                {{ c.problem[:100] }}{% if c.problem|length > 100 %}...{% endif %}
+              </p>
+              <div class="consultation-status mt-2">
+                <span class="badge bg-warning bg-opacity-10 text-warning">
+                  <i class="fas fa-clock me-1"></i>Pending Review
+                </span>
+              </div>
+            </div>
+          {% else %}
+            <div class="text-center py-5">
+              <div class="empty-consultation-state">
+                <i class="fas fa-comments text-muted mb-3" style="font-size: 3rem;"></i>
+                <h6 class="text-muted mb-2">No Consultations Yet</h6>
+                <p class="text-muted small">Your expert consultations will appear here</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.consultation-card {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.consultation-history-card {
+  border-radius: 12px;
+}
+
+.consultation-icon {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.consultation-form .form-control {
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+.consultation-form .form-control:focus {
+  border-color: #2e7d32;
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+.consultation-textarea {
+  border-radius: 8px;
+  resize: none;
+}
+
+.consultation-submit {
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.consultation-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
+}
+
+.consultation-history-body {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.consultation-item {
+  transition: background-color 0.2s ease;
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+.consultation-item:hover {
+  background-color: rgba(46, 125, 50, 0.02);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  font-size: 0.8rem;
+}
+
+.consultation-user {
+  display: flex;
+  align-items: center;
+}
+
+.consultation-date {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.consultation-preview {
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.consultation-status .badge {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.empty-consultation-state {
+  padding: 2rem 1rem;
+}
+
+.input-group-text {
+  border-radius: 8px 0 0 8px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+}
+
+.form-floating textarea.form-control {
+  height: 140px;
+  border-radius: 8px;
+}
+
+.form-floating label {
+  color: #6c757d;
+  padding: 1rem 0.75rem;
+}
+
+/* Custom scrollbar for consultation history */
+.consultation-history-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.consultation-history-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.consultation-history-body::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.consultation-history-body::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+@media (max-width: 768px) {
+  .consultation-card .card-header {
+    padding: 2rem 1.5rem;
+  }
+  
+  .consultation-icon {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .consultation-icon i {
+    font-size: 1.5rem;
+  }
+}
+</style>
+{% endblock %}

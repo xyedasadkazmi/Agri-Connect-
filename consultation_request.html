@@ -1,0 +1,712 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <!-- Premium Header Section -->
+  <div class="row justify-content-center mb-5">
+    <div class="col-lg-10">
+      <div class="premium-consultation-header text-center">
+        <div class="expert-avatar-large">
+          {% if expert.image_filename %}
+          <img src="{{ url_for('static', filename='uploads/' ~ expert.image_filename) }}" 
+               class="expert-avatar-img" alt="{{ expert.name }}">
+          {% else %}
+          <div class="expert-avatar-placeholder">
+            <i class="fas fa-user-tie"></i>
+          </div>
+          {% endif %}
+          {% if expert.is_verified %}
+          <div class="verification-badge">
+            <i class="fas fa-check"></i>
+          </div>
+          {% endif %}
+        </div>
+        <h1 class="premium-main-title">Consult with Expert</h1>
+        <p class="premium-subtitle">Get personalized agricultural advice from our certified specialist</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+      <!-- Expert Info Card -->
+      <div class="expert-info-card">
+        <div class="expert-header">
+          <div class="expert-basic-info">
+            <h2 class="expert-name">{{ expert.name }}</h2>
+            <div class="expert-specialization">
+              <i class="fas fa-graduation-cap"></i>
+              {{ expert.specialization or "Agricultural Specialist" }}
+            </div>
+            {% if expert.email %}
+            <div class="expert-contact">
+              <i class="fas fa-envelope"></i>
+              {{ expert.email }}
+            </div>
+            {% endif %}
+          </div>
+          <div class="expert-stats">
+            <div class="stat">
+              <div class="stat-number">4.8</div>
+              <div class="stat-label">Rating</div>
+            </div>
+            <div class="stat">
+              <div class="stat-number">50+</div>
+              <div class="stat-label">Consultations</div>
+            </div>
+            <div class="stat">
+              <div class="stat-number">98%</div>
+              <div class="stat-label">Success Rate</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Consultation Form -->
+      <div class="consultation-form-card">
+        <div class="form-header">
+          <div class="header-icon">
+            <i class="fas fa-comments"></i>
+          </div>
+          <div class="header-text">
+            <h3>Request Consultation</h3>
+            <p>Fill out the form below to get expert advice</p>
+          </div>
+        </div>
+
+        <form method="POST" class="premium-consultation-form">
+          <div class="form-section">
+            <div class="section-header">
+              <i class="fas fa-user-circle"></i>
+              <h4>Personal Information</h4>
+            </div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="input-group premium-input-group">
+                  <label class="input-label">Your Full Name</label>
+                  <div class="input-wrapper">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" name="farmer_name" class="premium-input" 
+                           value="{{ current_user.name }}" placeholder="Enter your full name" required>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-group premium-input-group">
+                  <label class="input-label">Email Address</label>
+                  <div class="input-wrapper">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" name="farmer_email" class="premium-input" 
+                           value="{{ current_user.email }}" placeholder="Enter your email address" required>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="section-header">
+              <i class="fas fa-clipboard-list"></i>
+              <h4>Problem Description</h4>
+            </div>
+            <div class="input-group premium-input-group">
+              <label class="input-label">Describe Your Agricultural Challenge</label>
+              <div class="textarea-wrapper">
+                <textarea name="problem" class="premium-textarea" rows="6" 
+                          placeholder="Please provide detailed information about your agricultural issue. Include:
+• Type of crops affected
+• Symptoms observed
+• Duration of the problem
+• Previous treatments attempted
+• Weather conditions
+• Soil type and location
+The more details you provide, the better we can help you." required></textarea>
+                <div class="textarea-footer">
+                  <span class="char-counter">0/2000 characters</span>
+                  <span class="tip-text"><i class="fas fa-lightbulb"></i> Be specific for better assistance</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <input type="hidden" name="expert_id" value="{{ expert.id }}">
+
+          <!-- Consultation Tips -->
+          <div class="consultation-tips">
+            <div class="tips-header">
+              <i class="fas fa-rocket"></i>
+              <h5>Tips for Better Consultation</h5>
+            </div>
+            <div class="tips-grid">
+              <div class="tip-item">
+                <i class="fas fa-camera"></i>
+                <span>Include photos if possible</span>
+              </div>
+              <div class="tip-item">
+                <i class="fas fa-ruler-combined"></i>
+                <span>Mention field size and location</span>
+              </div>
+              <div class="tip-item">
+                <i class="fas fa-cloud-sun"></i>
+                <span>Describe recent weather</span>
+              </div>
+              <div class="tip-item">
+                <i class="fas fa-history"></i>
+                <span>Note when symptoms started</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="form-actions">
+            <a href="{{ url_for('experts') }}" class="btn-secondary">
+              <i class="fas fa-arrow-left"></i>
+              Back to Experts
+            </a>
+            <button type="submit" class="btn-primary">
+              <i class="fas fa-paper-plane"></i>
+              Send Consultation Request
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Response Time Info -->
+      <div class="response-info-card">
+        <div class="info-content">
+          <div class="info-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="info-text">
+            <h5>Expected Response Time</h5>
+            <p>Our experts typically respond within <strong>24-48 hours</strong>. For urgent matters, please include "URGENT" in your problem description.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+:root {
+  --primary-green: #2e7d32;
+  --secondary-green: #4caf50;
+  --accent-gold: #d4af37;
+  --light-bg: #f8fdf8;
+  --card-bg: #ffffff;
+  --text-dark: #1e3a2c;
+  --text-light: #6b8e6e;
+  --border-radius: 20px;
+  --shadow-soft: 0 8px 40px rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 15px 50px rgba(0, 0, 0, 0.12);
+}
+
+.premium-consultation-header {
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.expert-avatar-large {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 2rem;
+}
+
+.expert-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid white;
+  box-shadow: var(--shadow-medium);
+}
+
+.expert-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 2.5rem;
+  border: 4px solid white;
+  box-shadow: var(--shadow-medium);
+}
+
+.verification-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  background: #4caf50;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.8rem;
+  border: 2px solid white;
+}
+
+.premium-main-title {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  font-family: 'Georgia', serif;
+}
+
+.premium-subtitle {
+  font-size: 1.3rem;
+  color: var(--text-light);
+  font-weight: 300;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.expert-info-card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(46, 125, 50, 0.1);
+}
+
+.expert-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.expert-basic-info h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+}
+
+.expert-specialization, .expert-contact {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: var(--text-light);
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.expert-specialization i, .expert-contact i {
+  color: var(--primary-green);
+  width: 20px;
+}
+
+.expert-stats {
+  display: flex;
+  gap: 2rem;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--primary-green);
+  line-height: 1;
+}
+
+.stat-label {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.consultation-form-card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-medium);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.form-header {
+  background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+  color: white;
+  padding: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.header-icon {
+  font-size: 2.5rem;
+  opacity: 0.9;
+}
+
+.header-text h3 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.header-text p {
+  opacity: 0.9;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.premium-consultation-form {
+  padding: 2.5rem;
+}
+
+.form-section {
+  margin-bottom: 2.5rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e8f5e9;
+}
+
+.section-header i {
+  color: var(--primary-green);
+  font-size: 1.3rem;
+}
+
+.section-header h4 {
+  color: var(--text-dark);
+  font-weight: 600;
+  margin: 0;
+}
+
+.premium-input-group {
+  margin-bottom: 1.5rem;
+}
+
+.input-label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.8rem;
+  font-size: 1rem;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-light);
+  font-size: 1.1rem;
+  z-index: 2;
+}
+
+.premium-input {
+  width: 100%;
+  padding: 1.2rem 1.2rem 1.2rem 55px;
+  border: 2px solid #e8f5e9;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: white;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.premium-input:focus {
+  border-color: var(--secondary-green);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+  transform: translateY(-2px);
+}
+
+.textarea-wrapper {
+  position: relative;
+}
+
+.premium-textarea {
+  width: 100%;
+  padding: 1.5rem;
+  border: 2px solid #e8f5e9;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: white;
+  resize: vertical;
+  transition: all 0.3s ease;
+  line-height: 1.6;
+  font-family: 'Inter', sans-serif;
+  min-height: 200px;
+}
+
+.premium-textarea:focus {
+  border-color: var(--secondary-green);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.textarea-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.8rem;
+  font-size: 0.9rem;
+}
+
+.char-counter {
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.tip-text {
+  color: var(--accent-gold);
+  font-weight: 500;
+}
+
+.consultation-tips {
+  background: rgba(46, 125, 50, 0.03);
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2rem 0;
+  border: 1px solid rgba(46, 125, 50, 0.1);
+}
+
+.tips-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.tips-header i {
+  color: var(--primary-green);
+  font-size: 1.3rem;
+}
+
+.tips-header h5 {
+  color: var(--text-dark);
+  font-weight: 600;
+  margin: 0;
+}
+
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.tip-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e8f5e9;
+}
+
+.tip-item i {
+  color: var(--secondary-green);
+  font-size: 1rem;
+}
+
+.tip-item span {
+  color: var(--text-dark);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e8f5e9;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 2rem;
+  background: white;
+  color: var(--text-light);
+  text-decoration: none;
+  border: 2px solid #e8f5e9;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: #f8f9fa;
+  color: var(--text-dark);
+  transform: translateX(-5px);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 2.5rem;
+  background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(46, 125, 50, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(46, 125, 50, 0.4);
+}
+
+.response-info-card {
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  text-align: center;
+}
+
+.info-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.info-icon {
+  font-size: 2.5rem;
+  color: #1976d2;
+}
+
+.info-text h5 {
+  color: #1976d2;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.info-text p {
+  color: #1565c0;
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .premium-main-title {
+    font-size: 2.5rem;
+  }
+  
+  .expert-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+  }
+  
+  .expert-stats {
+    justify-content: center;
+  }
+  
+  .form-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .btn-secondary, .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .info-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .tips-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .premium-main-title {
+    font-size: 2rem;
+  }
+  
+  .premium-consultation-form {
+    padding: 2rem 1.5rem;
+  }
+  
+  .consultation-form-card {
+    margin-bottom: 1.5rem;
+  }
+  
+  .expert-info-card {
+    padding: 2rem 1.5rem;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const textarea = document.querySelector('.premium-textarea');
+  const charCounter = document.querySelector('.char-counter');
+
+  // Character counter for problem description
+  textarea.addEventListener('input', function() {
+    const length = this.value.length;
+    charCounter.textContent = `${length}/2000 characters`;
+    
+    // Color coding based on length
+    if (length > 1800) {
+      charCounter.style.color = '#ff4757';
+    } else if (length > 1500) {
+      charCounter.style.color = '#ffa502';
+    } else if (length > 500) {
+      charCounter.style.color = '#2ed573';
+    } else {
+      charCounter.style.color = '#6b8e6e';
+    }
+    
+    // Auto-resize
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+  });
+
+  // Add focus effects to inputs
+  const inputs = document.querySelectorAll('.premium-input, .premium-textarea');
+  inputs.forEach(input => {
+    input.addEventListener('focus', function() {
+      this.parentElement.classList.add('focused');
+    });
+    
+    input.addEventListener('blur', function() {
+      this.parentElement.classList.remove('focused');
+    });
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,366 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <!-- Professional Header -->
+  <div class="row justify-content-center mb-5">
+    <div class="col-lg-10">
+      <div class="d-flex align-items-center mb-4">
+        <div class="discussion-icon-wrapper bg-success bg-opacity-10 rounded-3 p-3 me-3">
+          <i class="fas fa-comments text-success fs-2"></i>
+        </div>
+        <div>
+          <h1 class="h2 fw-bold text-dark mb-2">Start New Discussion</h1>
+          <p class="text-muted mb-0">Share your knowledge and questions with the farming community</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card discussion-form-card border-0 shadow-lg">
+        <div class="card-header bg-success text-white py-4 border-0">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-edit me-3 fs-4"></i>
+            <div>
+              <h3 class="mb-1 fw-bold">Create Discussion Post</h3>
+              <p class="mb-0 opacity-75">Fill in the details below to start a conversation</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-body p-5">
+          <form method="POST" enctype="multipart/form-data" class="discussion-form">
+            <!-- Title Field -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold text-dark mb-3">
+                <i class="fas fa-heading me-2 text-success"></i>
+                Discussion Title
+              </label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="fas fa-pencil-alt text-muted"></i>
+                </span>
+                <input type="text" name="title" class="form-control border-start-0" 
+                       placeholder="Enter a clear and descriptive title for your discussion..." required>
+              </div>
+              <div class="form-text">
+                <i class="fas fa-lightbulb me-1 text-warning"></i>
+                Be specific to attract the right audience and get better responses
+              </div>
+            </div>
+
+            <!-- Content Field -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold text-dark mb-3">
+                <i class="fas fa-align-left me-2 text-success"></i>
+                Discussion Content
+              </label>
+              <div class="form-floating">
+                <textarea name="content" class="form-control discussion-textarea" 
+                          placeholder="Write your detailed question or discussion content..." 
+                          style="height: 200px" required></textarea>
+                <label>Describe your question, problem, or topic in detail. Include any relevant context, challenges, or specific information that will help others understand and provide helpful responses...</label>
+              </div>
+              <div class="form-text">
+                <i class="fas fa-info-circle me-1 text-muted"></i>
+                The more detailed your question, the better the community can help you
+              </div>
+            </div>
+
+            <!-- Image Upload Field -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold text-dark mb-3">
+                <i class="fas fa-image me-2 text-success"></i>
+                Add Visual Content (Optional)
+              </label>
+              
+              <div class="image-upload-container">
+                <div class="upload-area border-2 border-dashed rounded-3 p-4 text-center" id="uploadArea">
+                  <i class="fas fa-cloud-upload-alt text-muted fs-1 mb-3"></i>
+                  <h5 class="text-muted mb-2">Drag & Drop your image here</h5>
+                  <p class="text-muted small mb-3">or click to browse files</p>
+                  <input type="file" name="image" accept="image/*" class="d-none" id="imageInput">
+                  <button type="button" class="btn btn-outline-success btn-sm" onclick="document.getElementById('imageInput').click()">
+                    <i class="fas fa-folder-open me-2"></i>Choose File
+                  </button>
+                </div>
+                
+                <div class="image-preview mt-3 d-none" id="imagePreview">
+                  <div class="preview-card border rounded-3 p-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                      <div class="d-flex align-items-center">
+                        <img id="previewImage" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                        <div>
+                          <h6 class="mb-1" id="fileName">image.jpg</h6>
+                          <small class="text-muted" id="fileSize">0 KB</small>
+                        </div>
+                      </div>
+                      <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeImage()">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="upload-info mt-2">
+                  <small class="text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Supported formats: JPG, PNG, GIF. Max size: 5MB
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Form Tips -->
+            <div class="alert alert-info border-0 bg-light">
+              <div class="d-flex">
+                <i class="fas fa-lightbulb text-warning me-3 fs-5"></i>
+                <div>
+                  <h6 class="alert-heading mb-2">Tips for a Great Discussion</h6>
+                  <ul class="mb-0 small">
+                    <li>Be clear and specific about your question or topic</li>
+                    <li>Include relevant details like crop type, location, or specific challenges</li>
+                    <li>Use images to better illustrate your situation</li>
+                    <li>Be respectful and open to different perspectives</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <a href="{{ url_for('forum') }}" class="btn btn-outline-secondary btn-lg px-4 me-md-2">
+                <i class="fas fa-arrow-left me-2"></i>Cancel
+              </a>
+              <button type="submit" class="btn btn-success btn-lg px-5 discussion-submit-btn">
+                <i class="fas fa-paper-plane me-2"></i>Post Discussion
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.discussion-form-card {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.discussion-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.discussion-form .form-control {
+  border-radius: 10px;
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+  padding: 1rem 1.2rem;
+}
+
+.discussion-form .form-control:focus {
+  border-color: #2e7d32;
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+.discussion-textarea {
+  border-radius: 10px;
+  resize: vertical;
+  min-height: 200px;
+}
+
+.input-group-text {
+  border-radius: 10px 0 0 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+}
+
+.upload-area {
+  border: 2px dashed #dee2e6;
+  background: #fafafa;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.upload-area:hover {
+  border-color: #2e7d32;
+  background: #f8fdf8;
+}
+
+.upload-area.dragover {
+  border-color: #2e7d32;
+  background: rgba(46, 125, 50, 0.05);
+}
+
+.image-preview .preview-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+}
+
+.discussion-submit-btn {
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.discussion-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
+}
+
+.form-floating textarea.form-control {
+  height: 200px;
+  border-radius: 10px;
+}
+
+.form-floating label {
+  color: #6c757d;
+  padding: 1rem 1.2rem;
+}
+
+.alert-info {
+  border-radius: 12px;
+}
+
+.card-header {
+  border-radius: 20px 20px 0 0 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .discussion-form-card .card-body {
+    padding: 2rem 1.5rem;
+  }
+  
+  .discussion-icon-wrapper {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .discussion-icon-wrapper i {
+    font-size: 1.5rem;
+  }
+  
+  .d-md-flex {
+    flex-direction: column;
+  }
+  
+  .btn-lg {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .discussion-form-card .card-body {
+    padding: 1.5rem 1rem;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const imageInput = document.getElementById('imageInput');
+  const uploadArea = document.getElementById('uploadArea');
+  const imagePreview = document.getElementById('imagePreview');
+  const previewImage = document.getElementById('previewImage');
+  const fileName = document.getElementById('fileName');
+  const fileSize = document.getElementById('fileSize');
+
+  // File input change event
+  imageInput.addEventListener('change', function(e) {
+    handleImageSelection(e.target.files[0]);
+  });
+
+  // Drag and drop functionality
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, preventDefaults, false);
+  });
+
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  ['dragenter', 'dragover'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, highlight, false);
+  });
+
+  ['dragleave', 'drop'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, unhighlight, false);
+  });
+
+  function highlight() {
+    uploadArea.classList.add('dragover');
+  }
+
+  function unhighlight() {
+    uploadArea.classList.remove('dragover');
+  }
+
+  uploadArea.addEventListener('drop', function(e) {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    handleImageSelection(files[0]);
+  });
+
+  // Click to upload
+  uploadArea.addEventListener('click', function() {
+    imageInput.click();
+  });
+
+  function handleImageSelection(file) {
+    if (file) {
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      if (!validTypes.includes(file.type)) {
+        alert('Please select a valid image file (JPG, PNG, GIF, WEBP)');
+        return;
+      }
+
+      // Validate file size (5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size must be less than 5MB');
+        return;
+      }
+
+      // Display file info
+      fileName.textContent = file.name;
+      fileSize.textContent = (file.size / 1024).toFixed(2) + ' KB';
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        previewImage.src = e.target.result;
+        imagePreview.classList.remove('d-none');
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Remove image function
+  window.removeImage = function() {
+    imageInput.value = '';
+    imagePreview.classList.add('d-none');
+  };
+
+  // Auto-resize textarea
+  const textarea = document.querySelector('.discussion-textarea');
+  textarea.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+  });
+});
+</script>
+{% endblock %}

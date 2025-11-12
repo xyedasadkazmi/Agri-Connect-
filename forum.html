@@ -1,0 +1,624 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid px-4 py-4">
+  <!-- Professional Header -->
+  <div class="professional-header rounded-4 p-5 mb-5 position-relative overflow-hidden">
+    <div class="header-background"></div>
+    <div class="row align-items-center position-relative">
+      <div class="col-lg-8">
+        <div class="d-flex align-items-center">
+          <div class="professional-logo me-4">
+            <div class="logo-container">
+              <i class="fas fa-seedling"></i>
+            </div>
+          </div>
+          <div>
+            <h1 class="display-5 fw-bold text-dark mb-2">Community Forum</h1>
+            <p class="lead text-muted mb-0">Connect with experts and share agricultural knowledge</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+        {% if current_user.is_authenticated %}
+          <a href="{{ url_for('new_thread') }}" class="btn btn-professional btn-lg px-4 py-3">
+            <i class="fas fa-plus-circle me-2"></i>Start Discussion
+          </a>
+        {% else %}
+          <a href="{{ url_for('login') }}" class="btn btn-professional-outline btn-lg px-4 py-3">
+            <i class="fas fa-sign-in-alt me-2"></i>Join Community
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Professional Search -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <div class="professional-card rounded-4 p-4 border">
+        <form method="get" class="row g-3 align-items-center">
+          <div class="col-lg-10">
+            <div class="search-container position-relative">
+              <i class="fas fa-search search-icon"></i>
+              <input type="text" name="q" class="form-control form-control-lg search-input" 
+                     placeholder="Search discussions, topics, or questions..." value="{{ q }}">
+            </div>
+          </div>
+          <div class="col-lg-2">
+            <button class="btn btn-professional btn-lg w-100 py-3">
+              <i class="fas fa-search me-2"></i>Search
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Professional Stats Dashboard -->
+  <div class="row mb-5">
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="stat-card professional-stat-1 rounded-4 p-4 h-100 border">
+        <div class="d-flex align-items-center">
+          <div class="stat-icon-wrapper me-3">
+            <i class="fas fa-comments"></i>
+          </div>
+          <div>
+            <h3 class="stat-number mb-1">{{ posts|length if posts else 0 }}</h3>
+            <p class="stat-label mb-0">Active Discussions</p>
+          </div>
+        </div>
+        <div class="stat-progress mt-3">
+          <div class="progress-bar-fill" style="width: 85%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="stat-card professional-stat-2 rounded-4 p-4 h-100 border">
+        <div class="d-flex align-items-center">
+          <div class="stat-icon-wrapper me-3">
+            <i class="fas fa-users"></i>
+          </div>
+          <div>
+            <h3 class="stat-number mb-1">{{ posts|length if posts else 0 }}</h3>
+            <p class="stat-label mb-0">Community Members</p>
+          </div>
+        </div>
+        <div class="stat-progress mt-3">
+          <div class="progress-bar-fill" style="width: 70%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="stat-card professional-stat-3 rounded-4 p-4 h-100 border">
+        <div class="d-flex align-items-center">
+          <div class="stat-icon-wrapper me-3">
+            <i class="fas fa-lightbulb"></i>
+          </div>
+          <div>
+            <h3 class="stat-number mb-1">0</h3>
+            <p class="stat-label mb-0">Solutions Shared</p>
+          </div>
+        </div>
+        <div class="stat-progress mt-3">
+          <div class="progress-bar-fill" style="width: 90%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="stat-card professional-stat-4 rounded-4 p-4 h-100 border">
+        <div class="d-flex align-items-center">
+          <div class="stat-icon-wrapper me-3">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div>
+            <h3 class="stat-number mb-1">0</h3>
+            <p class="stat-label mb-0">Knowledge Exchange</p>
+          </div>
+        </div>
+        <div class="stat-progress mt-3">
+          <div class="progress-bar-fill" style="width: 78%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Professional Discussions Grid -->
+  {% if posts %}
+    <div class="professional-card rounded-4 overflow-hidden border">
+      <div class="card-header-professional px-4 py-4">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <h3 class="mb-0 text-dark">
+              <i class="fas fa-list-alt me-2 text-success"></i>
+              Recent Discussions
+            </h3>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <div class="filter-buttons">
+              <button class="btn btn-filter active">Latest</button>
+              <button class="btn btn-filter">Popular</button>
+              <button class="btn btn-filter">Trending</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="discussions-grid p-4">
+        {% for post in posts %}
+          <div class="discussion-card professional-hover border">
+            <div class="discussion-header">
+              <div class="engagement-badge">
+                <span class="engagement-count">{{ post.like_count() }}</span>
+                <i class="fas fa-heart"></i>
+              </div>
+              <div class="discussion-category">Agriculture</div>
+            </div>
+            
+            <div class="discussion-content">
+              <a href="{{ url_for('view_thread', post_id=post.id) }}" class="discussion-title">
+                <h4>{{ post.title }}</h4>
+              </a>
+              <p class="discussion-excerpt">{{ post.content[:150] }}{% if post.content|length > 150 %}...{% endif %}</p>
+            </div>
+            
+            <div class="discussion-footer">
+              <div class="user-info">
+                <div class="user-avatar-professional">
+                  {{ post.user.name[0] if post.user and post.user.name else 'A' }}
+                </div>
+                <div class="user-details">
+                  <div class="user-name">{{ post.user.name if post.user else 'Community Member' }}</div>
+                  <div class="post-date">{{ post.created_at.strftime('%b %d, %Y') }}</div>
+                </div>
+              </div>
+              <div class="discussion-meta">
+                <div class="meta-item">
+                  <i class="fas fa-comment"></i>
+                  <span>{{ post.reply_count() }}</span>
+                </div>
+                <div class="meta-item">
+                  <i class="fas fa-eye"></i>
+                  <span>1.2k</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="discussion-actions">
+              <a href="{{ url_for('view_thread', post_id=post.id) }}" class="btn btn-professional-sm">
+                <i class="fas fa-arrow-right me-2"></i>View Discussion
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% else %}
+    <!-- Professional Empty State -->
+    <div class="professional-card rounded-4 text-center py-5 border">
+      <div class="empty-state-professional">
+        <div class="empty-icon">
+          <i class="fas fa-comments"></i>
+        </div>
+        <h3 class="mt-4 mb-3 text-dark">Start the Conversation</h3>
+        <p class="text-muted mb-4">Be the first to share knowledge and build our professional community</p>
+        {% if current_user.is_authenticated %}
+          <a href="{{ url_for('new_thread') }}" class="btn btn-professional btn-lg px-5">
+            <i class="fas fa-plus-circle me-2"></i>Create First Discussion
+          </a>
+        {% else %}
+          <a href="{{ url_for('login') }}" class="btn btn-professional-outline btn-lg px-5">
+            <i class="fas fa-sign-in-alt me-2"></i>Join to Contribute
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<style>
+:root {
+  --professional-green: #2e7d32;
+  --professional-dark: #1b5e20;
+  --professional-light: #4caf50;
+  --professional-bg: #f8f9fa;
+  --professional-border: #e9ecef;
+  --professional-text: #2c3e50;
+  --professional-muted: #6c757d;
+  --professional-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+body {
+  background-color: var(--professional-bg);
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  color: var(--professional-text);
+}
+
+.professional-header {
+  background: white;
+  border: 1px solid var(--professional-border);
+  box-shadow: var(--professional-shadow);
+}
+
+.header-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(46, 125, 50, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(76, 175, 80, 0.03) 0%, transparent 50%);
+  z-index: -1;
+}
+
+.professional-logo {
+  position: relative;
+}
+
+.logo-container {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--professional-green), var(--professional-dark));
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: white;
+  box-shadow: 0 8px 25px rgba(46, 125, 50, 0.3);
+  border: 3px solid rgba(255, 255, 255, 0.9);
+}
+
+.btn-professional {
+  background: linear-gradient(135deg, var(--professional-green), var(--professional-dark));
+  border: none;
+  color: white;
+  font-weight: 600;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.btn-professional:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(46, 125, 50, 0.4);
+  color: white;
+  background: linear-gradient(135deg, var(--professional-dark), var(--professional-green));
+}
+
+.btn-professional-outline {
+  background: transparent;
+  border: 2px solid var(--professional-green);
+  color: var(--professional-green);
+  font-weight: 600;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.btn-professional-outline:hover {
+  background: var(--professional-green);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+}
+
+.professional-card {
+  background: white;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.professional-card:hover {
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+}
+
+.search-container {
+  position: relative;
+}
+
+.search-input {
+  background: white;
+  border: 1px solid var(--professional-border);
+  border-radius: 12px;
+  padding: 20px 20px 20px 50px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: var(--professional-green);
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--professional-muted);
+  z-index: 10;
+}
+
+.stat-card {
+  background: white;
+  color: var(--professional-text);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.professional-stat-1 { border-left: 4px solid #2e7d32; }
+.professional-stat-2 { border-left: 4px solid #1976d2; }
+.professional-stat-3 { border-left: 4px solid #f57c00; }
+.professional-stat-4 { border-left: 4px solid #7b1fa2; }
+
+.stat-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  background: rgba(46, 125, 50, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--professional-green);
+}
+
+.professional-stat-2 .stat-icon-wrapper { background: rgba(25, 118, 210, 0.1); color: #1976d2; }
+.professional-stat-3 .stat-icon-wrapper { background: rgba(245, 124, 0, 0.1); color: #f57c00; }
+.professional-stat-4 .stat-icon-wrapper { background: rgba(123, 31, 162, 0.1); color: #7b1fa2; }
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0;
+  color: var(--professional-text);
+}
+
+.stat-label {
+  color: var(--professional-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.stat-progress {
+  height: 4px;
+  background: #e9ecef;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--professional-green);
+  border-radius: 2px;
+  transition: width 1s ease-in-out;
+}
+
+.professional-stat-2 .progress-bar-fill { background: #1976d2; }
+.professional-stat-3 .progress-bar-fill { background: #f57c00; }
+.professional-stat-4 .progress-bar-fill { background: #7b1fa2; }
+
+.card-header-professional {
+  background: white;
+  border-bottom: 1px solid var(--professional-border);
+}
+
+.discussions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 20px;
+}
+
+.discussion-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s ease;
+  border: 1px solid var(--professional-border);
+}
+
+.professional-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-color: var(--professional-green);
+}
+
+.discussion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.engagement-badge {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.engagement-count {
+  margin-right: 5px;
+}
+
+.discussion-category {
+  background: #e8f5e8;
+  color: var(--professional-green);
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.discussion-title h4 {
+  color: var(--professional-text);
+  font-weight: 700;
+  margin-bottom: 15px;
+  line-height: 1.4;
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+
+.discussion-title:hover h4 {
+  color: var(--professional-green);
+}
+
+.discussion-excerpt {
+  color: var(--professional-muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+.discussion-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar-professional {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--professional-green), var(--professional-dark));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  margin-right: 12px;
+  font-size: 0.9rem;
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--professional-text);
+  font-size: 0.9rem;
+}
+
+.post-date {
+  font-size: 0.8rem;
+  color: var(--professional-muted);
+}
+
+.discussion-meta {
+  display: flex;
+  gap: 15px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  color: var(--professional-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.meta-item i {
+  margin-right: 5px;
+}
+
+.btn-professional-sm {
+  background: var(--professional-green);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.btn-professional-sm:hover {
+  background: var(--professional-dark);
+  color: white;
+  transform: translateX(3px);
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-filter {
+  background: white;
+  border: 1px solid var(--professional-border);
+  color: var(--professional-muted);
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.btn-filter.active,
+.btn-filter:hover {
+  background: var(--professional-green);
+  border-color: var(--professional-green);
+  color: white;
+}
+
+.empty-state-professional {
+  padding: 60px 20px;
+}
+
+.empty-icon {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  background: rgba(46, 125, 50, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-icon i {
+  font-size: 3rem;
+  color: var(--professional-green);
+}
+
+.rounded-4 {
+  border-radius: 16px !important;
+}
+
+@media (max-width: 768px) {
+  .discussions-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .display-5 {
+    font-size: 2rem;
+  }
+  
+  .professional-header {
+    padding: 2rem 1.5rem !important;
+  }
+  
+  .logo-container {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+}
+</style>
+{% endblock %}

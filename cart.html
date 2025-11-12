@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4 text-success">🛒 Your Shopping Cart</h2>
+  {% if items %}
+  <table class="table table-striped align-middle">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.product.name }}</td>
+        <td>₨ {{ "%.2f"|format(item.product.final_price()) }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('update_cart', cart_id=item.id) }}" class="d-flex align-items-center">
+            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" class="form-control me-2" style="width:70px;">
+            <button class="btn btn-outline-success btn-sm">Update</button>
+          </form>
+        </td>
+        <td>₨ {{ "%.2f"|format(item.total_price()) }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('remove_from_cart', cart_id=item.id) }}">
+            <button class="btn btn-outline-danger btn-sm">Remove</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td colspan="3" class="text-end fw-bold">Grand Total:</td>
+        <td colspan="2" class="fw-bold">₨ {{ "%.2f"|format(total) }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <a href="{{ url_for('products') }}" class="btn btn-success">Continue Shopping</a>
+  <!-- ✅ Checkout button now points to your checkout page -->
+  <a href="{{ url_for('checkout') }}" class="btn btn-primary">Proceed to Checkout</a>
+  {% else %}
+  <p class="text-muted">Your cart is empty. <a href="{{ url_for('products') }}">Shop now</a>.</p>
+  {% endif %}
+</div>
+{% endblock %}

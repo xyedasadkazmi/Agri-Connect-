@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-success mb-4">🛒 Checkout</h2>
+
+  {% if items %}
+  <div class="row">
+    <!-- Billing & Shipping Form -->
+    <div class="col-md-6">
+      <div class="card shadow-sm p-3 mb-3">
+        <h5>Billing & Shipping Details</h5>
+        <form action="{{ url_for('place_order') }}" method="POST">
+          <div class="mb-3">
+            <label for="name" class="form-label">Full Name</label>
+            <input type="text" name="name" class="form-control" id="name" required>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" id="email" required>
+          </div>
+          <div class="mb-3">
+            <label for="phone" class="form-label">Phone</label>
+            <input type="tel" name="phone" class="form-control" id="phone" required>
+          </div>
+          <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <textarea name="address" class="form-control" id="address" rows="3" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="city" class="form-label">City</label>
+            <input type="text" name="city" class="form-control" id="city" required>
+          </div>
+          <div class="mb-3">
+            <label for="zip" class="form-label">ZIP / Postal Code</label>
+            <input type="text" name="zip" class="form-control" id="zip" required>
+          </div>
+          <div class="mb-3">
+            <label for="payment" class="form-label">Payment Method</label>
+            <select name="payment_method" class="form-select" id="payment" required>
+              <option value="" disabled selected>Select Payment Method</option>
+              <option value="cod">Cash on Delivery</option>
+              <option value="card">Credit / Debit Card</option>
+              <option value="paypal">PayPal</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-success w-100">Place Order</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="col-md-6">
+      <div class="card shadow-sm p-3 mb-3">
+        <h5>Order Summary</h5>
+        <ul class="list-group mb-3">
+          {% for item in items %}
+          <li class="list-group-item d-flex justify-content-between">
+            {{ item.product.name }} x {{ item.quantity }}
+            <span>₨ {{ "%.2f"|format(item.total_price()) }}</span>
+          </li>
+          {% endfor %}
+          <li class="list-group-item d-flex justify-content-between fw-bold">
+            Grand Total
+            <span>₨ {{ "%.2f"|format(total) }}</span>
+          </li>
+        </ul>
+        <a href="{{ url_for('cart') }}" class="btn btn-outline-secondary w-100">Back to Cart</a>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <p class="text-muted">Your cart is empty.</p>
+  <a href="{{ url_for('products') }}" class="btn btn-success">Shop Now</a>
+  {% endif %}
+</div>
+{% endblock %}

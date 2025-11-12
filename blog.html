@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+
+  <!-- Professional Header Section -->
+  <div class="row align-items-center mb-5">
+    <div class="col-md-8">
+      <div class="d-flex align-items-center">
+        <div class="blog-icon-wrapper bg-success bg-opacity-10 rounded-3 p-3 me-4">
+          <i class="fas fa-blog text-success fs-2"></i>
+        </div>
+        <div>
+          <h1 class="h2 fw-bold text-dark mb-2">Knowledge Hub</h1>
+          <p class="text-muted mb-0">Expert insights and agricultural wisdom</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 text-md-end">
+      {% if current_user.is_authenticated %}
+      <a href="{{ url_for('new_blog') }}" class="btn btn-success btn-lg px-4">
+        <i class="fas fa-plus-circle me-2"></i>Write Blog
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Blog Statistics -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card border-0 bg-light h-100">
+        <div class="card-body text-center py-3">
+          <div class="text-success fs-4 mb-1">
+            <i class="fas fa-file-alt"></i>
+          </div>
+          <h4 class="text-success mb-1">{{ blogs|length if blogs else 0 }}</h4>
+          <small class="text-muted">Total Articles</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 bg-light h-100">
+        <div class="card-body text-center py-3">
+          <div class="text-info fs-4 mb-1">
+            <i class="fas fa-eye"></i>
+          </div>
+          <h4 class="text-info mb-1">0</h4>
+          <small class="text-muted">Monthly Views</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 bg-light h-100">
+        <div class="card-body text-center py-3">
+          <div class="text-warning fs-4 mb-1">
+            <i class="fas fa-users"></i>
+          </div>
+          <h4 class="text-warning mb-1">0</h4>
+          <small class="text-muted">Contributors</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 bg-light h-100">
+        <div class="card-body text-center py-3">
+          <div class="text-primary fs-4 mb-1">
+            <i class="fas fa-share-alt"></i>
+          </div>
+          <h4 class="text-primary mb-1">0</h4>
+          <small class="text-muted">Shares</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blog Posts Grid -->
+  {% if blogs %}
+  <div class="row">
+    {% for blog in blogs %}
+    <div class="col-lg-6 col-xl-4 mb-4">
+      <div class="card blog-card h-100 border-0">
+        {% if blog.image %}
+        <div class="blog-image-container">
+          <img src="{{ url_for('static', filename='uploads/' ~ blog.image) }}" class="blog-image" alt="{{ blog.title }}">
+          <div class="blog-overlay"></div>
+        </div>
+        {% else %}
+        <div class="blog-image-placeholder">
+          <i class="fas fa-leaf text-white"></i>
+        </div>
+        {% endif %}
+        
+        <div class="card-body d-flex flex-column p-4">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <span class="blog-category badge bg-success bg-opacity-10 text-success">Agriculture</span>
+            <small class="text-muted">
+              <i class="far fa-clock me-1"></i>{{ blog.created_at.strftime('%b %d, %Y') }}
+            </small>
+          </div>
+          
+          <h5 class="card-title fw-bold text-dark mb-3 line-clamp-2">{{ blog.title }}</h5>
+          
+          <div class="blog-author mb-3">
+            <div class="d-flex align-items-center">
+              <div class="author-avatar bg-success rounded-circle d-flex align-items-center justify-content-center me-2">
+                <small class="text-white fw-bold">
+                  {{ blog.user.name[0] if blog.user and blog.user.name else 'U' }}
+                </small>
+              </div>
+              <div>
+                <small class="text-muted">By</small>
+                <small class="fw-semibold text-dark">{{ blog.user.name if blog.user else 'Anonymous' }}</small>
+              </div>
+            </div>
+          </div>
+          
+          <p class="card-text text-muted line-clamp-3 mb-4 flex-grow-1">
+            {{ blog.content[:120] }}{% if blog.content|length > 120 %}...{% endif %}
+          </p>
+          
+          <div class="d-flex justify-content-between align-items-center mt-auto">
+            <a href="{{ url_for('view_blog', blog_id=blog.id) }}" class="btn btn-outline-success btn-sm">
+              <i class="fas fa-book-open me-2"></i>Read Article
+            </a>
+            <div class="blog-stats">
+              <small class="text-muted me-3">
+                <i class="far fa-eye me-1"></i>1.2k
+              </small>
+              <small class="text-muted">
+                <i class="far fa-comment me-1"></i>24
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <!-- Empty State -->
+  <div class="text-center py-5">
+    <div class="empty-blog-state">
+      <i class="fas fa-blog text-muted mb-4" style="font-size: 4rem;"></i>
+      <h4 class="text-muted mb-3">No Articles Yet</h4>
+      <p class="text-muted mb-4">Be the first to share your agricultural knowledge and insights</p>
+      {% if current_user.is_authenticated %}
+      <a href="{{ url_for('new_blog') }}" class="btn btn-success btn-lg">
+        <i class="fas fa-plus-circle me-2"></i>Write First Article
+      </a>
+      {% else %}
+      <a href="{{ url_for('login') }}" class="btn btn-outline-success btn-lg">
+        <i class="fas fa-sign-in-alt me-2"></i>Login to Contribute
+      </a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+<style>
+.blog-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.blog-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.blog-image-container {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.blog-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.blog-card:hover .blog-image {
+  transform: scale(1.05);
+}
+
+.blog-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 100%);
+}
+
+.blog-image-placeholder {
+  height: 200px;
+  background: linear-gradient(135deg, #2e7d32, #4caf50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+}
+
+.blog-icon-wrapper {
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.author-avatar {
+  width: 32px;
+  height: 32px;
+  font-size: 0.8rem;
+}
+
+.blog-category {
+  font-size: 0.75rem;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.blog-stats {
+  display: flex;
+  align-items: center;
+}
+
+.empty-blog-state {
+  padding: 3rem 1rem;
+}
+
+.btn-success {
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
+}
+
+.btn-outline-success {
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-success:hover {
+  transform: translateY(-2px);
+}
+
+.card.border-0.bg-light {
+  border-radius: 12px;
+  transition: transform 0.2s ease;
+}
+
+.card.border-0.bg-light:hover {
+  transform: translateY(-3px);
+}
+
+@media (max-width: 768px) {
+  .blog-card {
+    margin-bottom: 1.5rem;
+  }
+  
+  .blog-icon-wrapper {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .blog-icon-wrapper i {
+    font-size: 1.5rem;
+  }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgricConnect - Farming Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f9f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .container {
+            display: flex;
+            flex: 1;
+        }
+        
+        .left-panel {
+            flex: 1;
+            background: linear-gradient(rgba(76, 175, 80, 0.8), rgba(76, 175, 80, 0.9)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        
+        .welcome-text {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: #2E7D32;
+        }
+        
+        .login-form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+        
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+        
+        .remember-me input {
+            margin-right: 8px;
+        }
+        
+        .forgot-password {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        .login-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        .register-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: transparent;
+            color: #4CAF50;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background-color 0.3s, color 0.3s, transform 0.2s;
+        }
+        
+        .register-btn:hover {
+            background-color: #4CAF50;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .register-btn:active {
+            transform: translateY(0);
+        }
+        
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #ddd;
+            z-index: 1;
+        }
+        
+        .divider span {
+            background: white;
+            padding: 0 15px;
+            position: relative;
+            z-index: 2;
+            color: #777;
+        }
+        
+        .social-login {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .social-btn {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        .social-btn:hover {
+            background: #f9f9f9;
+            transform: translateY(-2px);
+        }
+        
+        .social-btn:active {
+            transform: translateY(0);
+        }
+        
+        .google-btn {
+            color: #DB4437;
+        }
+        
+        .facebook-btn {
+            color: #4267B2;
+        }
+        
+        .why-join {
+            margin-top: 30px;
+            padding: 25px;
+            background: #E8F5E9;
+            border-radius: 10px;
+        }
+        
+        .why-join h3 {
+            margin-bottom: 15px;
+            color: #2E7D32;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .why-join p {
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .why-join ul {
+            margin-top: 15px;
+            padding-left: 20px;
+        }
+        
+        .why-join li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #2E7D32;
+            color: white;
+        }
+        
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .left-panel {
+                padding: 30px 20px;
+            }
+            
+            .right-panel {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="logo">AgricConnect</div>
+            <h1>Welcome back to your farming dashboard</h1>
+            <p style="margin-top: 20px; font-size: 18px; line-height: 1.6;">Access real-time data, weather forecasts, market prices, and expert advice to optimize your farming operations.</p>
+            
+            <!-- New user section in left panel -->
+            <div style="margin-top: 40px; padding: 20px; background: rgba(255,255,255,0.2); border-radius: 8px;">
+                <h3 style="margin-bottom: 15px;">New to AgricConnect?</h3>
+                <p style="margin-bottom: 20px;">Join our community of farmers and agricultural experts to boost your productivity.</p>
+                <button class="register-btn" onclick="window.location.href='{{ url_for('register') }}'">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+            </div>
+        </div>
+        
+        <div class="right-panel">
+            <div class="logo">AgricConnect</div>
+            <h2 class="welcome-text">Welcome back to your farming dashboard</h2>
+            
+            <!-- Flash Messages -->
+            <div class="flash-messages">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+            
+            <form class="login-form" method="POST" action="{{ url_for('login') }}">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                
+                <div class="remember-forgot">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password">Forgot Password?</a>
+                </div>
+                
+                <button type="submit" class="login-btn">Login to Dashboard</button>
+                
+                <!-- Registration button in the form -->
+                <button type="button" class="register-btn" onclick="window.location.href='{{ url_for('register') }}'">
+                    <i class="fas fa-user-plus"></i> Create New Account
+                </button>
+                
+                <div class="divider">
+                    <span>Or continue with</span>
+                </div>
+                
+                <div class="social-login">
+                    <button type="button" class="social-btn google-btn">
+                        <i class="fab fa-google"></i>
+                        Google
+                    </button>
+                    <button type="button" class="social-btn facebook-btn">
+                        <i class="fab fa-facebook-f"></i>
+                        Facebook
+                    </button>
+                </div>
+                
+                <div class="why-join">
+                    <h3><i class="fas fa-leaf"></i> Why Join AgricConnect?</h3>
+                    <p>AgricConnect helps farmers increase productivity, reduce costs, and make data-driven decisions.</p>
+                    <ul>
+                        <li><i class="fas fa-chart-line"></i> Real-time market prices and trends</li>
+                        <li><i class="fas fa-cloud-sun"></i> Accurate weather forecasts</li>
+                        <li><i class="fas fa-seedling"></i> Expert farming advice</li>
+                        <li><i class="fas fa-tractor"></i> Equipment and resource management</li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="footer">
+        &copy; 2023 AgricConnect. All rights reserved.
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add loading state to login button
+            const loginForm = document.querySelector('.login-form');
+            const loginButton = document.querySelector('.login-btn');
+            
+            loginForm.addEventListener('submit', function() {
+                loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+                loginButton.disabled = true;
+            });
+            
+            // Social login buttons (for demo purposes)
+            document.querySelector('.google-btn').addEventListener('click', function() {
+                alert('Google login would be implemented here');
+            });
+            
+            document.querySelector('.facebook-btn').addEventListener('click', function() {
+                alert('Facebook login would be implemented here');
+            });
+            
+            // Auto-hide flash messages after 5 seconds
+            const flashMessages = document.querySelectorAll('.alert');
+            flashMessages.forEach(function(message) {
+                setTimeout(function() {
+                    message.style.opacity = '0';
+                    message.style.transition = 'opacity 0.5s ease';
+                    setTimeout(function() {
+                        message.style.display = 'none';
+                    }, 500);
+                }, 5000);
+            });
+        });
+    </script>
+</body>
+</html>

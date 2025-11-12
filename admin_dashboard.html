@@ -1,0 +1,373 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4" style="max-width: 1400px;">
+  <!-- Header Section -->
+  <div class="d-flex justify-content-between align-items-center mb-5">
+    <div>
+      <h1 style="font-size: 2.5rem; font-weight: 700; color: #1f2937; margin-bottom: 0.5rem; background: linear-gradient(135deg, #059669, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌿 Admin Dashboard</h1>
+      <p style="color: #6b7280; margin: 0; font-size: 1.1rem;">
+        Welcome, <strong style="color: #1f2937;">{{ current_user.name }}</strong>
+        {% if current_user.name|lower != current_user.role %}
+          <span style="background: linear-gradient(135deg, #dc2626, #ef4444); color: white; border-radius: 20px; padding: 4px 12px; font-size: 0.75rem; font-weight: 600; margin-left: 8px;">
+            {{ current_user.role|capitalize }}
+          </span>
+        {% endif %}
+      </p>
+    </div>
+    <div style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 16px; padding: 16px 24px; border: 1px solid rgba(226, 232, 240, 0.8);">
+      <small style="color: #6b7280; display: block; font-size: 0.875rem;">System Status</small>
+      <strong style="color: #059669; font-size: 1rem;">🟢 All Systems Operational</strong>
+    </div>
+  </div>
+
+  <!-- Statistics Row -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-3">
+      <div class="card border-0 text-white shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;"
+           onmouseover="this.style.transform='translateY(-6px) scale(1.02)'; this.style.boxShadow='0 20px 40px rgba(102, 126, 234, 0.3)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)'">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 style="font-size: 2.25rem; font-weight: 700; margin: 0;">{{ users|length }}</h3>
+              <p style="margin: 0; opacity: 0.9; font-size: 0.9rem;">Total Users</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.2); border-radius: 50%; padding: 14px; backdrop-filter: blur(10px);">
+              <i class="fas fa-users" style="font-size: 1.4rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 text-white shadow-sm" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 16px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;"
+           onmouseover="this.style.transform='translateY(-6px) scale(1.02)'; this.style.boxShadow='0 20px 40px rgba(79, 172, 254, 0.3)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)'">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 style="font-size: 2.25rem; font-weight: 700; margin: 0;">{{ experts|length }}</h3>
+              <p style="margin: 0; opacity: 0.9; font-size: 0.9rem;">Experts</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.2); border-radius: 50%; padding: 14px; backdrop-filter: blur(10px);">
+              <i class="fas fa-user-tie" style="font-size: 1.4rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 text-white shadow-sm" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 16px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;"
+           onmouseover="this.style.transform='translateY(-6px) scale(1.02)'; this.style.boxShadow='0 20px 40px rgba(67, 233, 123, 0.3)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)'">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 style="font-size: 2.25rem; font-weight: 700; margin: 0;">{{ consults|length }}</h3>
+              <p style="margin: 0; opacity: 0.9; font-size: 0.9rem;">Consultations</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.2); border-radius: 50%; padding: 14px; backdrop-filter: blur(10px);">
+              <i class="fas fa-comments" style="font-size: 1.4rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 text-white shadow-sm" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); border-radius: 16px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;"
+           onmouseover="this.style.transform='translateY(-6px) scale(1.02)'; this.style.boxShadow='0 20px 40px rgba(255, 154, 158, 0.3)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)'">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 style="font-size: 2.25rem; font-weight: 700; margin: 0;">{{ products|length + blogs|length + forums|length }}</h3>
+              <p style="margin: 0; opacity: 0.9; font-size: 0.9rem;">Total Content</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.2); border-radius: 50%; padding: 14px; backdrop-filter: blur(10px);">
+              <i class="fas fa-cube" style="font-size: 1.4rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- USERS MANAGEMENT -->
+    <div class="col-lg-6">
+      <div class="card border-0 h-100" style="border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); transition: all 0.3s ease;">
+        <div class="card-body p-0">
+          <div style="background: linear-gradient(135deg, #059669, #10b981); color: white; padding: 1.5rem; border-radius: 16px 16px 0 0;">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 style="margin: 0; font-weight: 600;">
+                <i class="fas fa-users me-2"></i>Registered Users
+              </h4>
+              <span style="background: rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 12px; font-size: 0.875rem; font-weight: 600; backdrop-filter: blur(10px);">
+                {{ users|length }} total
+              </span>
+            </div>
+          </div>
+          <div style="max-height: 400px; overflow-y: auto;">
+            <table class="table table-hover mb-0">
+              <thead style="background: #f8fafc; position: sticky; top: 0;">
+                <tr>
+                  <th style="border: none; padding: 1rem; font-weight: 600; color: #374151;">User</th>
+                  <th style="border: none; padding: 1rem; font-weight: 600; color: #374151;">Role</th>
+                  <th style="border: none; padding: 1rem; font-weight: 600; color: #374151;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for u in users %}
+                <tr style="transition: all 0.3s ease; border-bottom: 1px solid #f1f5f9;"
+                    onmouseover="this.style.background='linear-gradient(135deg, #f8fafc, #f1f5f9)'; this.style.transform='translateX(4px)'"
+                    onmouseout="this.style.background='white'; this.style.transform='translateX(0)'">
+                  <td style="border: none; padding: 1rem;">
+                    <div>
+                      <strong style="color: #1f2937; display: block;">{{ u.name }}</strong>
+                      <small style="color: #6b7280;">{{ u.email }}</small>
+                    </div>
+                  </td>
+                  <td style="border: none; padding: 1rem;">
+                    {% if u.role == 'admin' %}
+                      <span style="background: linear-gradient(135deg, #dc2626, #ef4444); color: white; border-radius: 20px; padding: 4px 12px; font-size: 0.75rem; font-weight: 600;">Admin</span>
+                    {% elif u.role == 'expert' %}
+                      <span style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border-radius: 20px; padding: 4px 12px; font-size: 0.75rem; font-weight: 600;">Expert</span>
+                    {% else %}
+                      <span style="background: linear-gradient(135deg, #6b7280, #4b5563); color: white; border-radius: 20px; padding: 4px 12px; font-size: 0.75rem; font-weight: 600;">Farmer</span>
+                    {% endif %}
+                  </td>
+                  <td style="border: none; padding: 1rem;">
+                    {% if u.role != 'admin' %}
+                      {% if u.role != 'expert' %}
+                        <form method="post" action="{{ url_for('promote_user', user_id=u.id) }}" style="display:inline">
+                          <button style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 8px; padding: 6px 12px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;"
+                                  onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.4)'"
+                                  onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            Promote
+                          </button>
+                        </form>
+                      {% else %}
+                        <form method="post" action="{{ url_for('demote_user', user_id=u.id) }}" style="display:inline">
+                          <button style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; border-radius: 8px; padding: 6px 12px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;"
+                                  onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(245, 158, 11, 0.4)'"
+                                  onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            Demote
+                          </button>
+                        </form>
+                      {% endif %}
+                    {% else %}
+                      <span style="color: #9ca3af; font-size: 0.875rem;">Super Admin</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="col-lg-6">
+      <!-- EXPERT DIRECTORY -->
+      <div class="card border-0 mb-4" style="border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); transition: all 0.3s ease;">
+        <div class="card-body p-0">
+          <div style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 1.5rem; border-radius: 16px 16px 0 0;">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 style="margin: 0; font-weight: 600;">
+                <i class="fas fa-user-tie me-2"></i>Expert Directory
+              </h4>
+              <span style="background: rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 12px; font-size: 0.875rem; font-weight: 600; backdrop-filter: blur(10px);">
+                {{ experts|length }} experts
+              </span>
+            </div>
+          </div>
+          <div style="max-height: 200px; overflow-y: auto;">
+            {% if experts %}
+              <div class="list-group list-group-flush">
+                {% for ex in experts %}
+                <div class="list-group-item border-0 py-3 px-4" style="transition: all 0.3s ease; border-bottom: 1px solid #f1f5f9 !important;"
+                     onmouseover="this.style.background='linear-gradient(135deg, #f8fafc, #f1f5f9)'; this.style.transform='translateX(4px)'"
+                     onmouseout="this.style.background='white'; this.style.transform='translateX(0)'">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <strong style="color: #1f2937; display: block;">{{ ex.name }}</strong>
+                      <small style="color: #6b7280;">{{ ex.specialization or 'General Agriculture' }}</small>
+                      {% if ex.is_verified %}
+                        <span style="background: rgba(16, 185, 129, 0.1); color: #059669; border-radius: 12px; padding: 2px 8px; font-size: 0.7rem; font-weight: 600; margin-left: 8px;">Verified</span>
+                      {% endif %}
+                    </div>
+                    <small style="color: #9ca3af;">{{ ex.email }}</small>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div style="text-align: center; padding: 2rem;">
+                <i class="fas fa-user-tie" style="color: #d1d5db; font-size: 2rem; margin-bottom: 1rem;"></i>
+                <p style="color: #9ca3af; margin: 0;">No experts available yet.</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- CONSULTATION REQUESTS -->
+      <div class="card border-0" style="border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); transition: all 0.3s ease;">
+        <div class="card-body p-0">
+          <div style="background: linear-gradient(135deg, #06b6d4, #0ea5e9); color: white; padding: 1.5rem; border-radius: 16px 16px 0 0;">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 style="margin: 0; font-weight: 600;">
+                <i class="fas fa-comments me-2"></i>Consultation Requests
+              </h4>
+              <span style="background: rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 12px; font-size: 0.875rem; font-weight: 600; backdrop-filter: blur(10px);">
+                {{ consults|length }} requests
+              </span>
+            </div>
+          </div>
+          <div style="max-height: 200px; overflow-y: auto;">
+            {% if consults %}
+              <div class="list-group list-group-flush">
+                {% for c in consults %}
+                <a href="{{ url_for('consultation_detail', cid=c.id) }}" 
+                   class="list-group-item list-group-item-action border-0 py-3 px-4" 
+                   style="text-decoration: none; transition: all 0.3s ease; border-bottom: 1px solid #f1f5f9 !important;"
+                   onmouseover="this.style.background='linear-gradient(135deg, #f8fafc, #f1f5f9)'; this.style.transform='translateX(4px)'"
+                   onmouseout="this.style.background='white'; this.style.transform='translateX(0)'">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <strong style="color: #1f2937; display: block;">#{{ c.id }} — {{ c.farmer_name }}</strong>
+                      <small style="color: #6b7280;">Click to view details</small>
+                    </div>
+                    <span style="background: {% if c.status == 'Pending' %}#fef3c7{% elif c.status == 'Resolved' %}#d1fae5{% else %}#f3f4f6{% endif %}; color: {% if c.status == 'Pending' %}#92400e{% elif c.status == 'Resolved' %}#065f46{% else %}#374151{% endif %}; border-radius: 12px; padding: 4px 8px; font-size: 0.75rem; font-weight: 600;">
+                      {{ c.status }}
+                    </span>
+                  </div>
+                </a>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div style="text-align: center; padding: 2rem;">
+                <i class="fas fa-comments" style="color: #d1d5db; font-size: 2rem; margin-bottom: 1rem;"></i>
+                <p style="color: #9ca3af; margin: 0;">No consultation requests found.</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE CONTROLS -->
+  <div class="card border-0 mt-4" style="border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); border: 2px solid rgba(220, 38, 38, 0.2) !important;">
+    <div class="card-body p-0">
+      <div style="background: linear-gradient(135deg, #dc2626, #ef4444); color: white; padding: 1.5rem; border-radius: 16px 16px 0 0;">
+        <h4 style="margin: 0; font-weight: 600;">
+          <i class="fas fa-trash-alt me-2"></i>Admin Delete Controls
+        </h4>
+      </div>
+      <div style="padding: 2rem;">
+        <div class="row g-4">
+          <!-- Blogs -->
+          <div class="col-md-4">
+            <h6 style="color: #1f2937; font-weight: 600; margin-bottom: 1rem;">
+              <i class="fas fa-blog me-2 text-primary"></i>Blogs ({{ blogs|length }})
+            </h6>
+            <div style="max-height: 200px; overflow-y: auto;">
+              {% for b in blogs %}
+              <div class="d-flex justify-content-between align-items-center py-2 px-3 mb-2" style="background: #f8fafc; border-radius: 8px; transition: all 0.3s ease;"
+                   onmouseover="this.style.background='#f1f5f9'; this.style.transform='translateX(4px)'"
+                   onmouseout="this.style.background='#f8fafc'; this.style.transform='translateX(0)'">
+                <span style="color: #374151; font-size: 0.875rem; flex: 1;">{{ b.title[:30] }}{% if b.title|length > 30 %}...{% endif %}</span>
+                <form action="{{ url_for('admin_delete_blog', blog_id=b.id) }}" method="post" style="display:inline;">
+                  <button style="background: #dc2626; color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 0.75rem; cursor: pointer; transition: all 0.3s ease;"
+                          onmouseover="this.style.background='#b91c1c'; this.style.transform='scale(1.1)'"
+                          onmouseout="this.style.background='#dc2626'; this.style.transform='scale(1)'"
+                          onclick="return confirm('Delete this blog?')">
+                    Delete
+                  </button>
+                </form>
+              </div>
+              {% else %}
+              <p style="color: #9ca3af; font-size: 0.875rem; text-align: center; margin: 1rem 0;">No blogs available.</p>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Products -->
+          <div class="col-md-4">
+            <h6 style="color: #1f2937; font-weight: 600; margin-bottom: 1rem;">
+              <i class="fas fa-shopping-bag me-2 text-green-500"></i>Products ({{ products|length }})
+            </h6>
+            <div style="max-height: 200px; overflow-y: auto;">
+              {% for p in products %}
+              <div class="d-flex justify-content-between align-items-center py-2 px-3 mb-2" style="background: #f8fafc; border-radius: 8px; transition: all 0.3s ease;"
+                   onmouseover="this.style.background='#f1f5f9'; this.style.transform='translateX(4px)'"
+                   onmouseout="this.style.background='#f8fafc'; this.style.transform='translateX(0)'">
+                <span style="color: #374151; font-size: 0.875rem; flex: 1;">{{ p.name[:30] }}{% if p.name|length > 30 %}...{% endif %}</span>
+                <form action="{{ url_for('admin_delete_product', product_id=p.id) }}" method="post" style="display:inline;">
+                  <button style="background: #dc2626; color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 0.75rem; cursor: pointer; transition: all 0.3s ease;"
+                          onmouseover="this.style.background='#b91c1c'; this.style.transform='scale(1.1)'"
+                          onmouseout="this.style.background='#dc2626'; this.style.transform='scale(1)'"
+                          onclick="return confirm('Delete this product?')">
+                    Delete
+                  </button>
+                </form>
+              </div>
+              {% else %}
+              <p style="color: #9ca3af; font-size: 0.875rem; text-align: center; margin: 1rem 0;">No products available.</p>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Forum Posts -->
+          <div class="col-md-4">
+            <h6 style="color: #1f2937; font-weight: 600; margin-bottom: 1rem;">
+              <i class="fas fa-comment-dots me-2 text-blue-500"></i>Forum Posts ({{ forums|length }})
+            </h6>
+            <div style="max-height: 200px; overflow-y: auto;">
+              {% for f in forums %}
+              <div class="d-flex justify-content-between align-items-center py-2 px-3 mb-2" style="background: #f8fafc; border-radius: 8px; transition: all 0.3s ease;"
+                   onmouseover="this.style.background='#f1f5f9'; this.style.transform='translateX(4px)'"
+                   onmouseout="this.style.background='#f8fafc'; this.style.transform='translateX(0)'">
+                <span style="color: #374151; font-size: 0.875rem; flex: 1;">{{ f.title[:30] }}{% if f.title|length > 30 %}...{% endif %}</span>
+                <form action="{{ url_for('admin_delete_forum', post_id=f.id) }}" method="post" style="display:inline;">
+                  <button style="background: #dc2626; color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 0.75rem; cursor: pointer; transition: all 0.3s ease;"
+                          onmouseover="this.style.background='#b91c1c'; this.style.transform='scale(1.1)'"
+                          onmouseout="this.style.background='#dc2626'; this.style.transform='scale(1)'"
+                          onclick="return confirm('Delete this forum post?')">
+                    Delete
+                  </button>
+                </form>
+              </div>
+              {% else %}
+              <p style="color: #9ca3af; font-size: 0.875rem; text-align: center; margin: 1rem 0;">No forum posts found.</p>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Add hover effects for all cards
+document.addEventListener('DOMContentLoaded', function() {
+  const cards = document.querySelectorAll('.card');
+  
+  cards.forEach(card => {
+    card.addEventListener('mouseenter', function() {
+      this.style.transform = 'translateY(-4px)';
+      this.style.boxShadow = '0 20px 40px rgba(0,0,0,0.12)';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+      this.style.transform = 'translateY(0)';
+      this.style.boxShadow = '0 10px 40px rgba(0,0,0,0.08)';
+    });
+  });
+});
+</script>
+{% endblock %}

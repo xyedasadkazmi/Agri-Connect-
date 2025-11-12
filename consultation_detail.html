@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5" style="max-width: 1200px;">
+  <!-- Main Card -->
+  <div class="card border-0 shadow-lg" style="border-radius: 20px; overflow: hidden; background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);">
+    <div class="card-body p-5">
+      
+      <!-- Header Section -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1 style="font-size: 2.25rem; font-weight: 700; color: #1f2937; margin-bottom: 0.5rem; background: linear-gradient(135deg, #059669, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            <i class="fas fa-comments me-3"></i>Consultation Details
+          </h1>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb" style="background: transparent; padding: 0; margin: 0;">
+              <li class="breadcrumb-item"><a href="{% if expert and expert.id %}{{ url_for('expert_dashboard', expert_id=expert.id) }}{% else %}{{ url_for('admin_dashboard') }}{% endif %}" 
+                 style="color: #6b7280; text-decoration: none; transition: color 0.3s ease;"
+                 onmouseover="this.style.color='#059669'"
+                 onmouseout="this.style.color='#6b7280'">
+                Dashboard
+              </a></li>
+              <li class="breadcrumb-item active" style="color: #374151;">Consultation #{{ consult.id }}</li>
+            </ol>
+          </nav>
+        </div>
+        <a href="{% if expert and expert.id %}{{ url_for('expert_dashboard', expert_id=expert.id) }}{% else %}{{ url_for('admin_dashboard') }}{% endif %}" 
+           style="background: transparent; color: #6b7280; border: 1px solid #d1d5db; border-radius: 12px; padding: 8px 16px; text-decoration: none; font-weight: 500; transition: all 0.3s ease;"
+           onmouseover="this.style.background='#f8fafc'; this.style.color='#374151'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'"
+           onmouseout="this.style.background='transparent'; this.style.color='#6b7280'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+          <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+      </div>
+
+      <div class="row g-4">
+        <!-- Farmer Information -->
+        <div class="col-lg-6">
+          <div class="card border-0 h-100" style="border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.08); transition: all 0.4s ease;"
+               onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 12px 40px rgba(0,0,0,0.12)'"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0,0,0,0.08)'">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-3">
+                <div style="background: linear-gradient(135deg, #10b981, #059669); border-radius: 12px; padding: 12px; margin-right: 12px;">
+                  <i class="fas fa-user text-white" style="font-size: 1.25rem;"></i>
+                </div>
+                <h5 style="margin: 0; color: #1f2937; font-weight: 600;">Farmer Information</h5>
+              </div>
+              
+              <div style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 12px; padding: 1.5rem;">
+                <div class="mb-3">
+                  <small style="color: #6b7280; font-weight: 500; display: block;">Name</small>
+                  <strong style="color: #1f2937; font-size: 1.1rem;">{{ consult.farmer_name }}</strong>
+                </div>
+                <div class="mb-3">
+                  <small style="color: #6b7280; font-weight: 500; display: block;">Email</small>
+                  <strong style="color: #1f2937;">{{ consult.farmer_email }}</strong>
+                </div>
+                <div>
+                  <small style="color: #6b7280; font-weight: 500; display: block;">Status</small>
+                  <span style="background: {% if consult.status == 'Pending' %}#fef3c7{% elif consult.status == 'Resolved' %}#d1fae5{% else %}#f3f4f6{% endif %}; 
+                        color: {% if consult.status == 'Pending' %}#92400e{% elif consult.status == 'Resolved' %}#065f46{% else %}#374151{% endif %}; 
+                        border-radius: 20px; padding: 6px 12px; font-size: 0.875rem; font-weight: 600;">
+                    {{ consult.status or 'Pending' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Expert Information -->
+        <div class="col-lg-6">
+          <div class="card border-0 h-100" style="border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.08); transition: all 0.4s ease;"
+               onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 12px 40px rgba(0,0,0,0.12)'"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0,0,0,0.08)'">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-3">
+                <div style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 12px; padding: 12px; margin-right: 12px;">
+                  <i class="fas fa-user-tie text-white" style="font-size: 1.25rem;"></i>
+                </div>
+                <h5 style="margin: 0; color: #1f2937; font-weight: 600;">Expert Information</h5>
+              </div>
+              
+              <div style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 12px; padding: 1.5rem;">
+                {% if expert and expert.id %}
+                  <div class="mb-3">
+                    <small style="color: #6b7280; font-weight: 500; display: block;">Name</small>
+                    <strong style="color: #1f2937; font-size: 1.1rem;">{{ expert.name }}</strong>
+                  </div>
+                  <div class="mb-3">
+                    <small style="color: #6b7280; font-weight: 500; display: block;">Email</small>
+                    <strong style="color: #1f2937;">{{ expert.email }}</strong>
+                  </div>
+                  <div>
+                    <small style="color: #6b7280; font-weight: 500; display: block;">Specialization</small>
+                    <strong style="color: #1f2937;">{{ expert.specialization or expert.specialty or 'General Agriculture' }}</strong>
+                  </div>
+                {% else %}
+                  <div style="text-align: center; padding: 1rem;">
+                    <i class="fas fa-user-tie" style="color: #d1d5db; font-size: 2rem; margin-bottom: 1rem;"></i>
+                    <p style="color: #9ca3af; margin: 0;">No expert assigned yet</p>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Problem Description -->
+      <div class="card border-0 mt-4" style="border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.08);">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center mb-3">
+            <div style="background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 12px; padding: 12px; margin-right: 12px;">
+              <i class="fas fa-file-alt text-white" style="font-size: 1.25rem;"></i>
+            </div>
+            <h5 style="margin: 0; color: #1f2937; font-weight: 600;">Problem Description</h5>
+          </div>
+          
+          <div style="background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 12px; padding: 1.5rem;">
+            <p style="margin: 0; color: #92400e; line-height: 1.7; font-size: 1.05rem;">{{ consult.problem }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meta Information -->
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <div style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 12px; padding: 1rem;">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-calendar text-success me-3" style="font-size: 1.1rem;"></i>
+              <div>
+                <small style="color: #6b7280; display: block;">Submitted On</small>
+                <strong style="color: #1f2937;">{{ consult.created_at.strftime('%d %B %Y, %I:%M %p') }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% if consult.updated_at %}
+        <div class="col-md-6">
+          <div style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 12px; padding: 1rem;">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-clock text-primary me-3" style="font-size: 1.1rem;"></i>
+              <div>
+                <small style="color: #6b7280; display: block;">Last Updated</small>
+                <strong style="color: #1f2937;">{{ consult.updated_at.strftime('%d %B %Y, %I:%M %p') }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Expert Response Section -->
+      <div class="card border-0 mt-4" style="border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.08);">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center mb-4">
+            <div style="background: linear-gradient(135deg, #10b981, #059669); border-radius: 12px; padding: 12px; margin-right: 12px;">
+              <i class="fas fa-reply text-white" style="font-size: 1.25rem;"></i>
+            </div>
+            <h5 style="margin: 0; color: #1f2937; font-weight: 600;">Expert Response</h5>
+          </div>
+
+          {% if consult.response %}
+            <!-- Existing Response -->
+            <div style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 1.5rem;">
+              <p style="margin: 0; color: #065f46; line-height: 1.7; font-size: 1.05rem;">
+                <strong>Response:</strong> {{ consult.response }}
+              </p>
+            </div>
+          {% elif current_user.role in ['expert', 'admin'] %}
+            <!-- Response Form -->
+            <form method="POST" action="{{ url_for('update_consultation', cid=consult.id) }}">
+              <div class="mb-4">
+                <textarea name="response" class="form-control" rows="5" placeholder="Type your professional response here... Provide detailed advice, recommendations, and solutions for the farmer's problem." 
+                          style="border-radius: 12px; border: 1px solid #d1d5db; padding: 1rem; font-size: 1rem; transition: all 0.3s ease;"
+                          onfocus="this.style.borderColor='#10b981'; this.style.boxShadow='0 0 0 3px rgba(16, 185, 129, 0.1)'"
+                          onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
+                          required></textarea>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <small style="color: #6b7280;">
+                  <i class="fas fa-lightbulb me-1"></i>Provide clear, actionable advice
+                </small>
+                <button type="submit" 
+                        style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 12px; padding: 12px 24px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);"
+                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(16, 185, 129, 0.4)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.3)'">
+                  <i class="fas fa-paper-plane me-2"></i>Submit Response
+                </button>
+              </div>
+            </form>
+          {% else %}
+            <!-- Awaiting Response -->
+            <div style="text-align: center; padding: 2rem;">
+              <div style="background: rgba(245, 158, 11, 0.1); border-radius: 50%; padding: 1.5rem; display: inline-block; margin-bottom: 1rem;">
+                <i class="fas fa-clock" style="color: #f59e0b; font-size: 2rem;"></i>
+              </div>
+              <h6 style="color: #92400e; margin-bottom: 0.5rem;">Awaiting Expert's Response</h6>
+              <p style="color: #d97706; margin: 0; font-size: 0.9rem;">Our experts are reviewing your consultation</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Email Reply Shortcut -->
+      {% if current_user.role in ['expert', 'admin'] and consult.farmer_email %}
+      <div class="mt-4 text-end">
+        <a href="mailto:{{ consult.farmer_email }}" 
+           style="background: transparent; color: #10b981; border: 1px solid #10b981; border-radius: 12px; padding: 10px 20px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; display: inline-flex; align-items: center;"
+           onmouseover="this.style.background='#10b981'; this.style.color='white'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.3)'"
+           onmouseout="this.style.background='transparent'; this.style.color='#10b981'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+          <i class="fas fa-envelope me-2"></i>Reply via Email
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+// Add smooth animations for cards
+document.addEventListener('DOMContentLoaded', function() {
+  const cards = document.querySelectorAll('.card');
+  
+  cards.forEach((card, index) => {
+    // Staggered animation
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    
+    setTimeout(() => {
+      card.style.transition = 'all 0.6s ease';
+      card.style.opacity = '1';
+      card.style.transform = 'translateY(0)';
+    }, index * 100);
+  });
+});
+</script>
+{% endblock %}

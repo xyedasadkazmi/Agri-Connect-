@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Search results for "{{ q }}"</h2>
+<section>
+  <h3>Blogs</h3>
+  <ul>{% for b in results.blogs %}<li><a href="/blog/{{b.id}}">{{b.title}}</a></li>{% else %}<li>No blog matches</li>{% endfor %}</ul>
+</section>
+<section>
+  <h3>Products</h3>
+  <ul>{% for p in results.products %}<li><a href="/product/{{p.id}}">{{p.name}}</a></li>{% else %}<li>No product matches</li>{% endfor %}</ul>
+</section>
+<section>
+  <h3>Forum</h3>
+  <ul>{% for f in results.forums %}<li><a href="/forum/{{f.id}}">{{f.title}}</a></li>{% else %}<li>No thread matches</li>{% endfor %}</ul>
+</section>
+{% endblock %}

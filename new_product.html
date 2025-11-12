@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow-lg p-5 rounded">
+    <h2 class="mb-4 text-success fw-bold">🌾 Add New Product</h2>
+    <form method="POST" enctype="multipart/form-data">
+
+      <!-- Product Name -->
+      <div class="mb-4">
+        <label class="form-label fw-bold">Product Name</label>
+        <input type="text" name="name" class="form-control" placeholder="Enter product name..." required>
+      </div>
+
+      <!-- Price -->
+      <div class="mb-4">
+        <label class="form-label fw-bold">Price (PKR)</label>
+        <input type="number" step="0.01" name="price" class="form-control" placeholder="e.g., 1500" required>
+      </div>
+
+      <!-- Discount -->
+      <div class="mb-4">
+        <label class="form-label fw-bold">Discount (%)</label>
+        <input type="number" step="1" name="discount" class="form-control" placeholder="e.g., 10" value="0">
+      </div>
+
+      <!-- Stock / Quantity -->
+      <div class="mb-4">
+        <label class="form-label fw-bold">Available Quantity</label>
+        <input type="number" step="1" min="0" name="stock" class="form-control" placeholder="Enter quantity in stock..." required>
+      </div>
+
+      <!-- Description -->
+      <div class="mb-4">
+        <label class="form-label fw-bold">Description</label>
+        <textarea name="description" rows="5" class="form-control" placeholder="Describe the product features, usage, and benefits..." required></textarea>
+      </div>
+
+      <!-- Image Upload -->
+      <div class="mb-4">
+        <label class="form-label fw-bold">Upload Product Image</label>
+        <input type="file" name="image" id="imageInput" class="form-control" accept="image/*">
+        <img id="preview" src="#" style="display:none; max-width:100%; max-height:300px; margin-top:10px; border-radius:10px; object-fit:cover; border:1px solid #ddd;">
+      </div>
+
+      <button type="submit" class="btn btn-success w-100 btn-lg fw-bold">Add Product</button>
+    </form>
+  </div>
+</div>
+
+<script>
+document.getElementById("imageInput").onchange = function(event) {
+  const [file] = event.target.files;
+  if (file) {
+    const preview = document.getElementById("preview");
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+  }
+};
+</script>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Profile - {{ user.name }}</h2>
+<p>Email: {{ user.email }}</p>
+<p>Joined: {{ user.join_date.strftime('%Y-%m-%d') }}</p>
+<h4>Your Blogs</h4>
+<ul>{% for b in blogs %}<li><a href="/blog/{{b.id}}">{{b.title}}</a></li>{% else %}<li>No blogs</li>{% endfor %}</ul>
+<h4>Your Products</h4>
+<ul>{% for p in products %}<li><a href="/product/{{p.id}}">{{p.name}}</a></li>{% else %}<li>No products</li>{% endfor %}</ul>
+<h4>Your Forum Posts</h4>
+<ul>{% for f in posts %}<li><a href="/forum/{{f.id}}">{{f.title}}</a></li>{% else %}<li>No posts</li>{% endfor %}</ul>
+{% endblock %}

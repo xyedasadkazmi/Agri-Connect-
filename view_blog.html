@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow-lg p-5 rounded">
+    <!-- Blog Title -->
+    <h2 class="text-success fw-bold mb-3">{{ blog.title }}</h2>
+
+    <!-- Meta Information -->
+    <p class="text-muted mb-4">
+      🕒 Posted on {{ blog.created_at.strftime('%Y-%m-%d') }}
+      {% if blog.user %}
+      by <strong>{{ blog.user.name }}</strong>
+      {% endif %}
+    </p>
+
+    <!-- Blog Image -->
+    {% if blog.image %}
+    <img src="{{ url_for('static', filename='uploads/' ~ blog.image) }}" 
+         class="img-fluid rounded mb-4 shadow-sm" 
+         alt="Blog Image" 
+         style="max-height:400px; object-fit:cover; width:100%;">
+    {% endif %}
+
+    <!-- Blog Content -->
+    <div class="mb-5" style="white-space: pre-line; font-size:1.05rem; line-height:1.6;">
+      {{ blog.content }}
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-between">
+      <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-lg">
+        ⬅ Back
+      </a>
+
+      {% if current_user.is_authenticated and current_user.role == 'admin' %}
+      <form method="POST" action="{{ url_for('admin_delete_blog', blog_id=blog.id) }}" 
+            onsubmit="return confirm('Are you sure you want to permanently delete this blog?');">
+        <button type="submit" class="btn btn-danger btn-lg">
+          🗑️ Delete Blog
+        </button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

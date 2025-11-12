@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5" style="max-width: 1400px;">
+  <!-- Expert Profile Section -->
+  <div class="card mb-5 overflow-hidden" style="border: none; border-radius: 20px; background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); box-shadow: 0 20px 60px rgba(0,0,0,0.1); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);">
+    <div class="card-body p-5">
+      <div class="row align-items-center">
+        <div class="col-md-3 text-center">
+          <div class="position-relative d-inline-block" style="transition: transform 0.3s ease;">
+            {% if expert.image_filename %}
+              <img src="{{ url_for('static', filename='uploads/' ~ expert.image_filename) }}" 
+                   class="rounded-circle" style="width: 160px; height: 160px; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+            {% else %}
+              <img src="{{ url_for('static', filename='images/default_user.png') }}" 
+                   class="rounded-circle" style="width: 160px; height: 160px; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+            {% endif %}
+            <div class="position-absolute bottom-0 end-0" style="background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; padding: 8px; border: 4px solid white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);">
+              <i class="fas fa-check text-white" style="font-size: 14px;"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <h1 style="font-size: 2.5rem; font-weight: 700; color: #1f2937; margin-bottom: 0.5rem; background: linear-gradient(135deg, #1f2937, #374151); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">{{ expert.name }}</h1>
+              <p style="font-size: 1.25rem; color: #10b981; font-weight: 500; margin-bottom: 1.5rem;">{{ expert.specialty or expert.specialization or 'Agriculture Expert' }}</p>
+            </div>
+            <span style="background: rgba(16, 185, 129, 0.1); color: #059669; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 8px 16px; font-size: 0.875rem; font-weight: 600; backdrop-filter: blur(10px);">
+              <i class="fas fa-star me-1"></i>Verified Expert
+            </span>
+          </div>
+          
+          <div class="row g-4 mb-4">
+            <div class="col-sm-6">
+              <div class="d-flex align-items-center p-4" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 16px; transition: all 0.3s ease; border: 1px solid rgba(226, 232, 240, 0.8);">
+                <div style="background: rgba(16, 185, 129, 0.1); border-radius: 50%; padding: 16px; margin-right: 16px;">
+                  <i class="fas fa-phone" style="color: #10b981; font-size: 1.25rem;"></i>
+                </div>
+                <div>
+                  <small style="color: #6b7280; display: block; font-size: 0.75rem; font-weight: 500;">Contact</small>
+                  <p style="margin: 0; font-weight: 600; color: #1f2937;">{{ expert.contact or 'Not provided' }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="d-flex align-items-center p-4" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 16px; transition: all 0.3s ease; border: 1px solid rgba(226, 232, 240, 0.8);">
+                <div style="background: rgba(16, 185, 129, 0.1); border-radius: 50%; padding: 16px; margin-right: 16px;">
+                  <i class="fas fa-user-tie" style="color: #10b981; font-size: 1.25rem;"></i>
+                </div>
+                <div>
+                  <small style="color: #6b7280; display: block; font-size: 0.75rem; font-weight: 500;">Status</small>
+                  <p style="margin: 0; font-weight: 600; color: #1f2937;">Active</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 16px; padding: 24px; border: 1px solid rgba(226, 232, 240, 0.8);">
+            <div class="d-flex align-items-center mb-3">
+              <div style="background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; padding: 12px; margin-right: 12px;">
+                <i class="fas fa-file-alt text-white" style="font-size: 1rem;"></i>
+              </div>
+              <h5 style="margin: 0; color: #1f2937; font-weight: 600;">Professional Bio</h5>
+            </div>
+            <p style="margin: 0; color: #374151; line-height: 1.7;">{{ expert.bio or 'This expert has not added a bio yet.' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Header -->
+  <div class="d-flex justify-content-between align-items-center mb-5">
+    <div>
+      <h2 style="font-size: 2rem; font-weight: 700; color: #1f2937; margin-bottom: 0.5rem;">Expert Dashboard</h2>
+      <p style="color: #6b7280; margin: 0;">Welcome back, <strong style="color: #1f2937;">{{ current_user.name }}</strong>. Here's your activity overview.</p>
+    </div>
+    <div class="text-end">
+      <div style="background: rgba(16, 185, 129, 0.1); border-radius: 12px; padding: 12px 20px; border: 1px solid rgba(16, 185, 129, 0.3); backdrop-filter: blur(10px);">
+        <small style="color: #6b7280; display: block; font-size: 0.75rem;">Account Type</small>
+        <strong style="color: #059669; font-size: 0.875rem;">Expert Professional</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Row -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="card border-0 text-white shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 style="font-size: 2.5rem; font-weight: 700; margin: 0;">{{ consults|length }}</h3>
+              <p style="margin: 0; opacity: 0.9; font-size: 0.9rem;">Pending Consultations</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.2); border-radius: 50%; padding: 16px; backdrop-filter: blur(10px);">
+              <i class="fas fa-clock" style="font-size: 1.5rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 text-white shadow-sm" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 20px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 style="font-size: 2.5rem; font-weight: 700; margin: 0;">{{ posts|length }}</h3>
+              <p style="margin: 0; opacity: 0.9; font-size: 0.9rem;">Forum Questions</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.2); border-radius: 50%; padding: 16px; backdrop-filter: blur(10px);">
+              <i class="fas fa-comments" style="font-size: 1.5rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 text-white shadow-sm" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 20px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 style="font-size: 2.5rem; font-weight: 700; margin: 0;">24h</h3>
+              <p style="margin: 0; opacity: 0.9; font-size: 0.9rem;">Response Time</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.2); border-radius: 50%; padding: 16px; backdrop-filter: blur(10px);">
+              <i class="fas fa-bolt" style="font-size: 1.5rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Pending Consultations -->
+    <div class="col-lg-8">
+      <div class="card border-0 h-100" style="border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); transition: all 0.3s ease;">
+        <div class="card-body p-0">
+          <div style="padding: 2rem 2rem 1rem; border-bottom: 1px solid #f1f5f9;">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 style="margin: 0; color: #1f2937; font-weight: 600;">
+                <i class="fas fa-clock me-2" style="color: #f59e0b;"></i>Pending Consultations
+              </h4>
+              <span style="background: rgba(245, 158, 11, 0.15); color: #d97706; border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 6px 12px; font-size: 0.875rem; font-weight: 600;">
+                {{ consults|length }} awaiting response
+              </span>
+            </div>
+          </div>
+          <div>
+            {% if consults %}
+              <div>
+                {% for c in consults %}
+                  <a href="{{ url_for('consultation_detail', cid=c.id) }}" 
+                     style="display: block; padding: 1.5rem 2rem; border-bottom: 1px solid #f1f5f9; text-decoration: none; color: inherit; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background: white;"
+                     onmouseover="this.style.background='linear-gradient(135deg, #f8fafc, #f1f5f9)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.1)'" 
+                     onmouseout="this.style.background='white'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                    <div class="row align-items-center">
+                      <div class="col-md-8">
+                        <div class="d-flex align-items-center mb-2">
+                          <h6 style="margin: 0 12px 0 0; color: #1f2937; font-weight: 600;">CONS-{{ "%04d"|format(c.id) }}</h6>
+                          <!-- FIXED: Added missing %} -->
+                          <span style="background: {% if c.status == 'Pending' %}#fef3c7{% elif c.status == 'Resolved' %}#d1fae5{% else %}#f3f4f6{% endif %}; color: {% if c.status == 'Pending' %}#92400e{% elif c.status == 'Resolved' %}#065f46{% else %}#374151{% endif %}; border-radius: 20px; padding: 4px 12px; font-size: 0.75rem; font-weight: 600;">
+                            {{ c.status or 'Pending' }}
+                          </span>
+                        </div>
+                        <p style="color: #6b7280; margin: 0 0 8px 0;">
+                          <i class="fas fa-user me-2"></i>{{ c.farmer_name }}
+                        </p>
+                        <p style="margin: 0; color: #374151; line-height: 1.5;">{{ c.problem[:120] }}{% if c.problem|length > 120 %}...{% endif %}</p>
+                      </div>
+                      <div class="col-md-4 text-md-end">
+                        <small style="color: #9ca3af; display: block; margin-bottom: 8px;">
+                          <i class="fas fa-calendar me-1"></i>{{ c.created_at.strftime('%b %d, %Y') }}
+                        </small>
+                        <button style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 25px; padding: 8px 20px; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);"
+                                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(16, 185, 129, 0.4)'"
+                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.3)'">
+                          Respond <i class="fas fa-arrow-right ms-1"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </a>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div style="text-align: center; padding: 3rem 2rem;">
+                <div style="background: rgba(16, 185, 129, 0.1); border-radius: 50%; padding: 2rem; display: inline-block; margin-bottom: 1rem;">
+                  <i class="fas fa-check-circle" style="color: #10b981; font-size: 3rem;"></i>
+                </div>
+                <h5 style="color: #6b7280; margin-bottom: 0.5rem;">All Caught Up!</h5>
+                <p style="color: #9ca3af; margin: 0;">No pending consultations at the moment.</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Forum Questions -->
+    <div class="col-lg-4">
+      <div class="card border-0 h-100" style="border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); transition: all 0.3s ease;">
+        <div class="card-body p-0">
+          <div style="padding: 2rem 2rem 1rem; border-bottom: 1px solid #f1f5f9;">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 style="margin: 0; color: #1f2937; font-weight: 600;">
+                <i class="fas fa-comments me-2" style="color: #3b82f6;"></i>Forum Activity
+              </h4>
+              <a href="{{ url_for('forum') }}" 
+                 style="background: transparent; color: #3b82f6; border: 1px solid #3b82f6; border-radius: 20px; padding: 6px 16px; font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: all 0.3s ease;"
+                 onmouseover="this.style.background='#3b82f6'; this.style.color='white'; this.style.transform='translateY(-1px)'"
+                 onmouseout="this.style.background='transparent'; this.style.color='#3b82f6'; this.style.transform='translateY(0)'">
+                View All <i class="fas fa-external-link-alt ms-1"></i>
+              </a>
+            </div>
+          </div>
+          <div>
+            {% if posts %}
+              <div>
+                {% for p in posts %}
+                  <div style="padding: 1.25rem 2rem; border-bottom: 1px solid #f1f5f9; transition: all 0.3s ease;"
+                       onmouseover="this.style.background='linear-gradient(135deg, #f8fafc, #f1f5f9)'; this.style.transform='translateX(4px)'"
+                       onmouseout="this.style.background='white'; this.style.transform='translateX(0)'">
+                    <a href="{{ url_for('view_thread', post_id=p.id) }}" style="text-decoration: none; color: inherit;">
+                      <h6 style="margin: 0 0 8px 0; color: #1f2937; font-weight: 600; line-height: 1.4;">{{ p.title }}</h6>
+                    </a>
+                    <div style="display: flex; align-items: center; color: #6b7280; margin-bottom: 8px; font-size: 0.875rem;">
+                      <small><i class="fas fa-user me-1"></i>{{ p.user.name if p.user else 'Anonymous' }}</small>
+                      <small style="margin: 0 8px;">•</small>
+                      <small><i class="fas fa-calendar me-1"></i>{{ p.created_at.strftime('%b %d, %Y') }}</small>
+                    </div>
+                    <div style="display: flex; justify-content: between; align-items: center;">
+                      <small style="color: #9ca3af;">{{ p.reply_count() }} responses</small>
+                      <span style="background: rgba(59, 130, 246, 0.1); color: #1d4ed8; border-radius: 20px; padding: 4px 12px; font-size: 0.75rem; font-weight: 600;">
+                        <i class="fas fa-reply me-1"></i>{{ p.reply_count() }}
+                      </span>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div style="text-align: center; padding: 3rem 2rem;">
+                <div style="background: rgba(59, 130, 246, 0.1); border-radius: 50%; padding: 2rem; display: inline-block; margin-bottom: 1rem;">
+                  <i class="fas fa-comments" style="color: #3b82f6; font-size: 3rem;"></i>
+                </div>
+                <h5 style="color: #6b7280; margin-bottom: 0.5rem;">No Recent Activity</h5>
+                <p style="color: #9ca3af; margin: 0;">Check back later for new forum posts.</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Add hover effects for statistic cards
+document.addEventListener('DOMContentLoaded', function() {
+  const statCards = document.querySelectorAll('.col-md-4 .card');
+  
+  statCards.forEach(card => {
+    card.addEventListener('mouseenter', function() {
+      this.style.transform = 'translateY(-8px) scale(1.02)';
+      this.style.boxShadow = '0 25px 50px rgba(0,0,0,0.15)';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+      this.style.transform = 'translateY(0) scale(1)';
+      this.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+    });
+  });
+
+  // Add hover effect for main profile card
+  const profileCard = document.querySelector('.card.shadow-lg');
+  if (profileCard) {
+    profileCard.addEventListener('mouseenter', function() {
+      this.style.transform = 'translateY(-4px)';
+      this.style.boxShadow = '0 30px 60px rgba(0,0,0,0.15)';
+    });
+    
+    profileCard.addEventListener('mouseleave', function() {
+      this.style.transform = 'translateY(0)';
+      this.style.boxShadow = '0 20px 60px rgba(0,0,0,0.1)';
+    });
+  }
+});
+</script>
+{% endblock %}

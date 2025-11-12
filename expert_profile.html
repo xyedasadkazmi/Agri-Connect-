@@ -1,0 +1,459 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <!-- Expert Profile Header -->
+  <div class="card expert-profile-card border-0 shadow-lg mb-5">
+    <div class="card-body p-5">
+      <div class="row align-items-center">
+        <div class="col-md-3 text-center">
+          <div class="expert-avatar-container position-relative mx-auto">
+            {% if expert.image_filename %}
+            <img src="{{ url_for('static', filename='uploads/' ~ expert.image_filename) }}"
+                 class="expert-avatar"
+                 alt="{{ expert.name }}">
+            {% else %}
+            <div class="expert-avatar-placeholder">
+              <i class="fas fa-user-tie text-white"></i>
+            </div>
+            {% endif %}
+            
+            {% if expert.is_verified %}
+            <div class="verified-badge-large">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="col-md-9">
+          <div class="expert-header-content">
+            <div class="d-flex align-items-center mb-3">
+              <h1 class="expert-name fw-bold text-dark mb-0 me-3">{{ expert.name }}</h1>
+              {% if expert.is_verified %}
+              <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2">
+                <i class="fas fa-shield-alt me-2"></i>Verified Expert
+              </span>
+              {% endif %}
+            </div>
+            
+            <p class="expert-specialization text-success fw-semibold fs-5 mb-3">
+              <i class="fas fa-leaf me-2"></i>{{ expert.specialization or 'Agricultural Specialist' }}
+            </p>
+
+            <div class="expert-contact-info mb-4">
+              <div class="row">
+                <div class="col-sm-6 mb-2">
+                  <div class="d-flex align-items-center">
+                    <div class="contact-icon me-3">
+                      <i class="fas fa-envelope text-success"></i>
+                    </div>
+                    <div>
+                      <small class="text-muted d-block">Email</small>
+                      <span class="fw-semibold text-dark">{{ expert.email }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 mb-2">
+                  <div class="d-flex align-items-center">
+                    <div class="contact-icon me-3">
+                      <i class="fas fa-clock text-success"></i>
+                    </div>
+                    <div>
+                      <small class="text-muted d-block">Response Time</small>
+                      <span class="fw-semibold text-dark">Within 24 hours</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Expert Rating -->
+            <div class="expert-rating-section mb-4">
+              <div class="d-flex align-items-center">
+                <div class="star-rating-large me-3">
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star-half-alt text-warning"></i>
+                </div>
+                <div>
+                  <span class="fw-bold text-dark">4.8/5.0</span>
+                  <small class="text-muted ms-1">(128 reviews)</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Expert Details Sections -->
+  <div class="row">
+    <!-- Bio Section -->
+    <div class="col-lg-8 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-light border-0 py-3">
+          <h5 class="mb-0 fw-semibold text-dark">
+            <i class="fas fa-user-circle me-2 text-success"></i>
+            Professional Biography
+          </h5>
+        </div>
+        <div class="card-body p-4">
+          {% if expert.bio %}
+          <p class="expert-bio text-dark line-height-lg">{{ expert.bio }}</p>
+          {% else %}
+          <div class="default-bio">
+            <div class="bio-header mb-4">
+              <div class="d-flex align-items-center mb-3">
+                <div class="bio-icon me-3">
+                  <i class="fas fa-seedling text-success"></i>
+                </div>
+                <h6 class="mb-0 text-dark fw-semibold">Agricultural Expertise</h6>
+              </div>
+              <p class="text-muted mb-4">
+                With over 15 years of experience in modern agricultural practices, I specialize in sustainable farming methods, 
+                crop management, and innovative agricultural technologies. My expertise helps farmers maximize yield while 
+                maintaining environmental sustainability.
+              </p>
+            </div>
+
+            <div class="bio-specialties">
+              <h6 class="text-dark fw-semibold mb-3">Areas of Specialization:</h6>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div class="d-flex align-items-center">
+                    <div class="specialty-icon me-2">
+                      <i class="fas fa-tractor text-success"></i>
+                    </div>
+                    <span class="text-dark">Modern Farming Techniques</span>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div class="d-flex align-items-center">
+                    <div class="specialty-icon me-2">
+                      <i class="fas fa-cloud-sun text-success"></i>
+                    </div>
+                    <span class="text-dark">Climate-Smart Agriculture</span>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div class="d-flex align-items-center">
+                    <div class="specialty-icon me-2">
+                      <i class="fas fa-vial text-success"></i>
+                    </div>
+                    <span class="text-dark">Soil Health Management</span>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div class="d-flex align-items-center">
+                    <div class="specialty-icon me-2">
+                      <i class="fas fa-recycle text-success"></i>
+                    </div>
+                    <span class="text-dark">Sustainable Practices</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bio-approach mt-4">
+              <h6 class="text-dark fw-semibold mb-3">My Approach:</h6>
+              <p class="text-muted mb-0">
+                I believe in combining traditional wisdom with modern technology to create farming solutions that are 
+                both productive and environmentally responsible. My consultations focus on practical, implementable 
+                strategies tailored to your specific farming conditions.
+              </p>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="col-lg-4 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-light border-0 py-3">
+          <h5 class="mb-0 fw-semibold text-dark">
+            <i class="fas fa-chart-bar me-2 text-success"></i>
+            Expert Statistics
+          </h5>
+        </div>
+        <div class="card-body p-4">
+          <div class="expert-stats-grid">
+            <div class="stat-item text-center mb-4">
+              <div class="stat-icon mb-2">
+                <i class="fas fa-handshake text-success"></i>
+              </div>
+              <div class="stat-number text-success fw-bold fs-3">50+</div>
+              <div class="stat-label text-muted">Consultations</div>
+            </div>
+            <div class="stat-item text-center mb-4">
+              <div class="stat-icon mb-2">
+                <i class="fas fa-trophy text-success"></i>
+              </div>
+              <div class="stat-number text-success fw-bold fs-3">98%</div>
+              <div class="stat-label text-muted">Success Rate</div>
+            </div>
+            <div class="stat-item text-center mb-4">
+              <div class="stat-icon mb-2">
+                <i class="fas fa-calendar-alt text-success"></i>
+              </div>
+              <div class="stat-number text-success fw-bold fs-3">5+</div>
+              <div class="stat-label text-muted">Years Experience</div>
+            </div>
+            <div class="stat-item text-center">
+              <div class="stat-icon mb-2">
+                <i class="fas fa-bolt text-success"></i>
+              </div>
+              <div class="stat-number text-success fw-bold fs-3">24h</div>
+              <div class="stat-label text-muted">Avg. Response</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+        <a href="{{ url_for('consultation_request', expert_id=expert.id) }}" class="btn btn-success btn-lg px-5 py-3 consultation-request-btn">
+          <i class="fas fa-calendar-check me-2"></i>Request Consultation
+        </a>
+        <a href="{{ url_for('experts') }}" class="btn btn-outline-secondary btn-lg px-5 py-3">
+          <i class="fas fa-arrow-left me-2"></i>Back to Experts
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.expert-profile-card {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.expert-avatar-container {
+  width: 180px;
+  height: 180px;
+}
+
+.expert-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 6px solid white;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.expert-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2e7d32, #4caf50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  border: 6px solid white;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.verified-badge-large {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  background: #28a745;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  border: 3px solid white;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.expert-name {
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+.expert-specialization {
+  font-size: 1.25rem;
+}
+
+.contact-icon {
+  width: 40px;
+  height: 40px;
+  background: rgba(46, 125, 50, 0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.star-rating-large {
+  display: flex;
+  gap: 4px;
+  font-size: 1.5rem;
+}
+
+.expert-bio {
+  line-height: 1.8;
+  font-size: 1.1rem;
+}
+
+.default-bio {
+  padding: 1rem 0;
+}
+
+.bio-icon {
+  width: 50px;
+  height: 50px;
+  background: rgba(46, 125, 50, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.specialty-icon {
+  width: 30px;
+  height: 30px;
+  background: rgba(46, 125, 50, 0.08);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.expert-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.stat-item {
+  padding: 1.5rem 1rem;
+  border-radius: 12px;
+  background: rgba(46, 125, 50, 0.03);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(46, 125, 50, 0.1);
+}
+
+.stat-item:hover {
+  background: rgba(46, 125, 50, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(46, 125, 50, 0.1);
+}
+
+.stat-icon {
+  font-size: 1.5rem;
+  opacity: 0.8;
+}
+
+.consultation-request-btn {
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.consultation-request-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(46, 125, 50, 0.4);
+}
+
+.btn-outline-secondary {
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+  transform: translateY(-3px);
+}
+
+.card {
+  border-radius: 16px;
+}
+
+.card-header {
+  border-radius: 16px 16px 0 0 !important;
+}
+
+.line-height-lg {
+  line-height: 1.8;
+}
+
+@media (max-width: 768px) {
+  .expert-avatar-container {
+    width: 140px;
+    height: 140px;
+    margin-bottom: 2rem;
+  }
+  
+  .expert-avatar-placeholder {
+    font-size: 2.5rem;
+  }
+  
+  .expert-name {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  
+  .expert-specialization {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+  
+  .expert-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .consultation-request-btn,
+  .btn-outline-secondary {
+    width: 100%;
+  }
+  
+  .d-flex.flex-md-row {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 576px) {
+  .expert-profile-card .card-body {
+    padding: 2rem 1.5rem;
+  }
+  
+  .expert-avatar-container {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .verified-badge-large {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+    bottom: 10px;
+    right: 10px;
+  }
+  
+  .bio-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+}
+</style>
+{% endblock %}

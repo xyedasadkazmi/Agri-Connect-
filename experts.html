@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <!-- Professional Header -->
+  <div class="row justify-content-center mb-5">
+    <div class="col-lg-8 text-center">
+      <div class="expert-header-icon mb-3">
+        <i class="fas fa-user-tie text-success"></i>
+      </div>
+      <h1 class="h2 fw-bold text-dark mb-3">Our Agricultural Experts</h1>
+      <p class="lead text-muted">Connect with certified professionals ready to help you succeed</p>
+    </div>
+  </div>
+
+  <!-- Expert Statistics -->
+  <div class="row mb-5">
+    <div class="col-md-3 col-6 mb-3">
+      <div class="text-center">
+        <div class="expert-stat-number text-success fw-bold fs-3">{{ experts|length if experts else 0 }}</div>
+        <div class="expert-stat-label text-muted small">Total Experts</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6 mb-3">
+      <div class="text-center">
+        <div class="expert-stat-number text-success fw-bold fs-3">{{ experts|selectattr('is_verified')|list|length if experts else 0 }}</div>
+        <div class="expert-stat-label text-muted small">Verified</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6 mb-3">
+      <div class="text-center">
+        <div class="expert-stat-number text-success fw-bold fs-3">24/7</div>
+        <div class="expert-stat-label text-muted small">Support</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6 mb-3">
+      <div class="text-center">
+        <div class="expert-stat-number text-success fw-bold fs-3">100%</div>
+        <div class="expert-stat-label text-muted small">Satisfaction</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Experts Grid -->
+  {% if experts %}
+  <div class="row">
+    {% for expert in experts %}
+    <div class="col-xl-4 col-md-6 mb-4">
+      <div class="card expert-card border-0 shadow-sm h-100">
+        <div class="expert-card-header position-relative">
+          <!-- Expert Image -->
+          <div class="expert-image-container mx-auto mt-4">
+            {% if expert.image_filename %}
+            <img src="{{ url_for('static', filename='uploads/' ~ expert.image_filename) }}"
+                 class="expert-image"
+                 alt="{{ expert.name }}">
+            {% else %}
+            <div class="expert-image-placeholder">
+              <i class="fas fa-user text-white"></i>
+            </div>
+            {% endif %}
+            
+            <!-- Verification Badge -->
+            {% if expert.is_verified %}
+            <div class="verified-badge">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="card-body text-center pt-4 pb-3">
+          <!-- Expert Name -->
+          <h5 class="expert-name fw-bold text-dark mb-2">{{ expert.name }}</h5>
+          
+          <!-- Specialization -->
+          <p class="expert-specialization text-success fw-semibold mb-3">
+            {{ expert.specialization or 'Agricultural Specialist' }}
+          </p>
+
+          <!-- Status -->
+          <div class="expert-status mb-3">
+            {% if expert.is_verified %}
+            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+              <i class="fas fa-shield-alt me-1"></i>Verified Expert
+            </span>
+            {% else %}
+            <span class="badge bg-secondary bg-opacity-10 text-secondary">
+              <i class="fas fa-clock me-1"></i>Pending Verification
+            </span>
+            {% endif %}
+          </div>
+
+          <!-- Rating (Placeholder) -->
+          <div class="expert-rating mb-3">
+            <div class="star-rating">
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star-half-alt text-warning"></i>
+            </div>
+            <small class="text-muted">(4.8/5.0)</small>
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="expert-stats d-flex justify-content-center gap-4 mb-3">
+            <div class="stat-item">
+              <div class="stat-number text-dark fw-bold">50+</div>
+              <div class="stat-label text-muted small">Consultations</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number text-dark fw-bold">98%</div>
+              <div class="stat-label text-muted small">Success Rate</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer bg-transparent border-0 pt-0 pb-4">
+          <a href="{{ url_for('expert_view', expert_id=expert.id) }}" class="btn btn-success w-100 py-2 expert-profile-btn">
+            <i class="fas fa-user-circle me-2"></i>View Full Profile
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <!-- Empty State -->
+  <div class="text-center py-5">
+    <div class="empty-experts-state">
+      <i class="fas fa-user-tie text-muted mb-4" style="font-size: 4rem;"></i>
+      <h4 class="text-muted mb-3">No Experts Available</h4>
+      <p class="text-muted mb-4">Our expert team is currently being assembled</p>
+      <a href="{{ url_for('consult_expert') }}" class="btn btn-outline-success">
+        <i class="fas fa-bell me-2"></i>Notify Me When Available
+      </a>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+.expert-header-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, rgba(46, 125, 50, 0.1), rgba(76, 175, 80, 0.1));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-size: 2rem;
+}
+
+.expert-card {
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.expert-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.expert-image-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.expert-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.expert-image-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2e7d32, #4caf50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  border: 4px solid white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.verified-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  background: #28a745;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.8rem;
+  border: 2px solid white;
+}
+
+.expert-name {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.expert-specialization {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.expert-status .badge {
+  font-size: 0.75rem;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.star-rating {
+  display: inline-flex;
+  gap: 2px;
+  margin-right: 8px;
+}
+
+.expert-stats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  margin-top: 2px;
+}
+
+.expert-profile-btn {
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.expert-profile-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
+}
+
+.expert-stat-number {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.expert-stat-label {
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.empty-experts-state {
+  padding: 3rem 1rem;
+}
+
+.card-footer {
+  background: transparent !important;
+}
+
+@media (max-width: 768px) {
+  .expert-header-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+  
+  .expert-image-container {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .expert-stats {
+    gap: 1.5rem;
+  }
+  
+  .expert-stat-number {
+    font-size: 1.5rem;
+  }
+}
+</style>
+{% endblock %}

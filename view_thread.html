@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <div class="card shadow p-4">
+    <h3 class="text-success">{{ post.title }}</h3>
+    <p class="text-muted mb-2">🕒 {{ post.created_at.strftime('%b %d, %Y %I:%M %p') }}</p>
+    <p>{{ post.content }}</p>
+
+    {% if post.image_filename %}
+      <div class="text-center">
+        <img src="{{ url_for('static', filename='uploads/' ~ post.image_filename) }}" class="img-fluid rounded mb-3">
+      </div>
+    {% endif %}
+
+    <hr>
+
+    <!-- ✅ Admin Delete Button -->
+    {% if current_user.is_authenticated and current_user.role == 'admin' %}
+    <form action="{{ url_for('admin_delete_forum', post_id=post.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this forum post?');">
+      <button type="submit" class="btn btn-danger mb-3">🗑️ Delete Post</button>
+    </form>
+    {% endif %}
+
+    <button id="like-post-btn" class="btn btn-outline-success btn-sm">
+      👍 Like <span id="like-count">{{ post.like_count() }}</span>
+    </button>
+
+    <hr>
+    <h5 class="mt-4 text-success">💬 Replies ({{ post.reply_count() }})</h5>
+
+    {% if replies %}
+      {% for r in replies %}
+        <div class="card p-3 mb-2">
+          <div class="d-flex justify-content-between">
+            <div>
+              <strong>
+                {{ r.user.name if r.user else 'Anonymous' }}
+                {% if r.user.role == 'expert' %}
+                  <span class="badge bg-primary">Expert</span>
+                {% elif r.user.role == 'admin' %}
+                  <span class="badge bg-danger">Admin</span>
+                {% endif %}
+              </strong>
+            </div>
+            <small class="text-muted">{{ r.created_at.strftime('%b %d, %Y %I:%M %p') }}</small>
+          </div>
+          <p class="mt-2">{{ r.content }}</p>
+
+          <button class="btn btn-sm btn-outline-success like-reply-btn" data-reply-id="{{ r.id }}">
+            👍 <span class="reply-like-count-{{ r.id }}">{{ r.like_count() }}</span>
+          </button>
+
+          <!-- ✅ Admin can delete replies too -->
+          {% if current_user.is_authenticated and current_user.role == 'admin' %}
+          <form action="{{ url_for('admin_delete_reply', reply_id=r.id) }}" method="POST" class="d-inline ms-2"
+                onsubmit="return confirm('Delete this reply?');">
+            <button type="submit" class="btn btn-sm btn-danger">🗑️ Delete Reply</button>
+          </form>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No replies yet. Be the first to respond!</p>
+    {% endif %}
+
+    {% if current_user.is_authenticated %}
+      <hr>
+      <form method="POST" class="mt-3">
+        <label><b>Reply to this Discussion</b></label>
+        <textarea name="content" rows="3" class="form-control mb-2" placeholder="Write your reply..." required></textarea>
+        <button class="btn btn-success">Post Reply</button>
+      </form>
+    {% else %}
+      <p class="mt-3"><a href="{{ url_for('login') }}">Login</a> to reply.</p>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+document.getElementById('like-post-btn').addEventListener('click', async function(){
+  const resp = await fetch('/like/post/{{ post.id }}', {method:'POST'});
+  const data = await resp.json();
+  document.getElementById('like-count').innerText = data.count;
+});
+
+document.querySelectorAll('.like-reply-btn').forEach(btn=>{
+  btn.addEventListener('click', async function(){
+    const rid = btn.dataset.replyId;
+    const resp = await fetch('/like/reply/' + rid, {method:'POST'});
+    const data = await resp.json();
+    document.querySelector('.reply-like-count-' + rid).innerText = data.count;
+  });
+});
+</script>
+{% endblock %}

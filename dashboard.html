@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgricConnect Pro - Enterprise Farming Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-green: #1a472a;
+            --secondary-green: #2e7d32;
+            --accent-gold: #d4af37;
+            --light-bg: #f8fdf8;
+            --card-bg: #ffffff;
+            --text-dark: #1e3a2c;
+            --text-light: #6b8e6e;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --border-radius: 16px;
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --shadow-strong: 0 15px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--light-bg) 0%, #e8f5e9 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: linear-gradient(180deg, var(--primary-green) 0%, #1e3a2c 100%);
+            color: white;
+            padding: 2rem 1.5rem;
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow-strong);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            color: var(--accent-gold);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .user-info h3 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-info p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.2rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.15);
+            transform: translateX(5px);
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            grid-column: 2;
+            padding: 2rem;
+            margin-left: 280px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            box-shadow: var(--shadow-soft);
+            width: 400px;
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            margin-left: 0.8rem;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Gemini AI Chat Board */
+        .gemini-chat-board {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .chat-toggle {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--secondary-green), var(--primary-green));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-strong);
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(46, 125, 50, 0.4);
+        }
+
+        .chat-container {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 380px;
+            height: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-strong);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e8f5e9;
+        }
+
+        .chat-container.active {
+            display: flex;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+            color: white;
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .ai-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .chat-title h3 {
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .chat-title p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .chat-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .chat-close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: #fafefa;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 1rem 1.2rem;
+            border-radius: 18px;
+            line-height: 1.4;
+            position: relative;
+            animation: messageSlide 0.3s ease;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: var(--secondary-green);
+            color: white;
+            border-bottom-right-radius: 6px;
+        }
+
+        .message.ai {
+            align-self: flex-start;
+            background: white;
+            color: var(--text-dark);
+            border: 1px solid #e8f5e9;
+            border-bottom-left-radius: 6px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 0.5rem;
+            text-align: right;
+        }
+
+        .chat-input-container {
+            padding: 1.2rem 1.5rem;
+            border-top: 1px solid #e8f5e9;
+            background: white;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 0.8rem;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: 1px solid #e8f5e9;
+            border-radius: 25px;
+            padding: 0.8rem 1.2rem;
+            outline: none;
+            resize: none;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            max-height: 100px;
+            background: #fafefa;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--secondary-green);
+        }
+
+        .chat-send {
+            width: 45px;
+            height: 45px;
+            background: var(--secondary-green);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .chat-send:hover {
+            background: var(--primary-green);
+            transform: scale(1.05);
+        }
+
+        .chat-send:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .quick-questions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .quick-question {
+            background: rgba(46, 125, 50, 0.1);
+            border: 1px solid rgba(46, 125, 50, 0.2);
+            border-radius: 15px;
+            padding: 0.6rem 0.8rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            color: var(--secondary-green);
+        }
+
+        .quick-question:hover {
+            background: rgba(46, 125, 50, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 3px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-light);
+            border-radius: 50%;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typingAnimation {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--secondary-green);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .stat-card.warning {
+            border-left-color: var(--warning);
+        }
+
+        .stat-card.danger {
+            border-left-color: var(--danger);
+        }
+
+        .stat-card.accent {
+            border-left-color: var(--accent-gold);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-icon.green { background: var(--secondary-green); }
+        .stat-icon.blue { background: #3498db; }
+        .stat-icon.orange { background: var(--warning); }
+        .stat-icon.gold { background: var(--accent-gold); }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .stat-change {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .stat-change.positive {
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            color: var(--danger);
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* Recent Activity */
+        .activity-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 2rem;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: var(--light-bg);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .activity-icon.success { background: var(--success); }
+        .activity-icon.warning { background: var(--warning); }
+        .activity-icon.info { background: #3498db; }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .activity-time {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Weather & Market */
+        .info-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .weather-card {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+        }
+
+        .weather-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .weather-temp {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .weather-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .weather-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .market-prices {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .price-change {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+        }
+
+        .price-change.positive {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        .price-change.negative {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-btn {
+            background: var(--card-bg);
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-soft);
+            text-decoration: none;
+            color: var(--text-dark);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+            background: var(--secondary-green);
+            color: white;
+        }
+
+        .action-btn:hover .action-icon {
+            background: white;
+            color: var(--secondary-green);
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: var(--light-bg);
+            color: var(--secondary-green);
+            transition: all 0.3s ease;
+        }
+
+        .action-label {
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .chat-container {
+                width: 350px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                grid-column: 1;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .chat-container {
+                width: 100%;
+                height: 100%;
+                bottom: 0;
+                right: 0;
+                border-radius: 0;
+            }
+            
+            .gemini-chat-board {
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-leaf"></i>
+                    <span>AgricConnect Pro</span>
+                </div>
+            </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">
+                    {{ current_user.name[0] }}
+                </div>
+                <div class="user-info">
+                    <h3>{{ current_user.name }}</h3>
+                    <p>Professional Farmer</p>
+                </div>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ url_for('new_blog') }}" class="nav-item">
+                    <i class="fas fa-edit"></i>
+                    <span>Crop Management</span>
+                </a>
+                <a href="{{ url_for('products') }}" class="nav-item">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Marketplace</span>
+                </a>
+                <a href="{{ url_for('consult') }}" class="nav-item">
+                    <i class="fas fa-user-md"></i>
+                    <span>Expert Consultation</span>
+                </a>
+                <a href="{{ url_for('new_thread') }}" class="nav-item">
+                    <i class="fas fa-comments"></i>
+                    <span>Community Forum</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-cloud-sun"></i>
+                    <span>Weather Forecast</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search crops, markets, weather...">
+                </div>
+                
+                <div class="header-actions">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <div class="notification-badge">3</div>
+                    </div>
+                    <div class="user-menu">
+                        <i class="fas fa-user-circle" style="font-size: 1.5rem;"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stats Grid -->
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon green">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">1,248</div>
+                    <div class="stat-label">Active Crops</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        12% from last month
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">78%</div>
+                    <div class="stat-label">Soil Moisture</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        5% optimal
+                    </div>
+                </div>
+                
+                <div class="stat-card warning">
+                    <div class="stat-header">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Pending Tasks</div>
+                    <div class="stat-change negative">
+                        <i class="fas fa-arrow-down"></i>
+                        2 urgent
+                    </div>
+                </div>
+                
+                <div class="stat-card accent">
+                    <div class="stat-header">
+                        <div class="stat-icon gold">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">$12,480</div>
+                    <div class="stat-label">Monthly Revenue</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        8.5% growth
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title">Crop Yield Forecast</div>
+                        <div class="chart-actions">
+                            <button class="btn-sm">Week</button>
+                            <button class="btn-sm active">Month</button>
+                            <button class="btn-sm">Year</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="yieldChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title">Resource Allocation</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="resourceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity & Weather/Market -->
+            <div class="info-cards">
+                <div class="activity-section">
+                    <div class="chart-header">
+                        <div class="chart-title">Recent Activity</div>
+                        <a href="#" class="text-link">View All</a>
+                    </div>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon success">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Wheat harvest completed</div>
+                                <div class="activity-time">2 hours ago</div>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon warning">
+                                <i class="fas fa-exclamation"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">Low soil moisture in Section B</div>
+                                <div class="activity-time">5 hours ago</div>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon info">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">New market price update for corn</div>
+                                <div class="activity-time">1 day ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-card weather-card">
+                    <div class="weather-header">
+                        <div>
+                            <div class="chart-title">Weather Forecast</div>
+                            <div class="location">Farm Location</div>
+                        </div>
+                        <div class="weather-temp">24°C</div>
+                    </div>
+                    <div class="weather-condition">
+                        <i class="fas fa-cloud-sun" style="font-size: 2rem;"></i>
+                        <span>Partly Cloudy</span>
+                    </div>
+                    <div class="weather-details">
+                        <div class="weather-detail">
+                            <i class="fas fa-wind"></i>
+                            <span>12 km/h</span>
+                        </div>
+                        <div class="weather-detail">
+                            <i class="fas fa-tint"></i>
+                            <span>45% Humidity</span>
+                        </div>
+                        <div class="weather-detail">
+                            <i class="fas fa-compress-arrows-alt"></i>
+                            <span>1012 hPa</span>
+                        </div>
+                        <div class="weather-detail">
+                            <i class="fas fa-cloud-rain"></i>
+                            <span>10% Precipitation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Market Prices -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">Today's Market Prices</div>
+                    <a href="#" class="text-link">View Details</a>
+                </div>
+                <div class="market-prices">
+                    <div class="price-item">
+                        <div class="crop-name">
+                            <strong>Wheat</strong>
+                        </div>
+                        <div class="price">$245/ton</div>
+                        <div class="price-change positive">+2.4%</div>
+                    </div>
+                    
+                    <div class="price-item">
+                        <div class="crop-name">
+                            <strong>Corn</strong>
+                        </div>
+                        <div class="price">$198/ton</div>
+                        <div class="price-change positive">+1.2%</div>
+                    </div>
+                    
+                    <div class="price-item">
+                        <div class="crop-name">
+                            <strong>Soybean</strong>
+                        </div>
+                        <div class="price">$415/ton</div>
+                        <div class="price-change negative">-0.8%</div>
+                    </div>
+                    
+                    <div class="price-item">
+                        <div class="crop-name">
+                            <strong>Rice</strong>
+                        </div>
+                        <div class="price">$320/ton</div>
+                        <div class="price-change positive">+3.1%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <a href="{{ url_for('new_blog') }}" class="action-btn">
+                    <div class="action-icon">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="action-label">Add New Crop</div>
+                </a>
+                
+                <a href="{{ url_for('products') }}" class="action-btn">
+                    <div class="action-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="action-label">Market Analysis</div>
+                </a>
+                
+                <a href="{{ url_for('consult') }}" class="action-btn">
+                    <div class="action-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="action-label">Expert Advice</div>
+                </a>
+                
+                <a href="{{ url_for('new_thread') }}" class="action-btn">
+                    <div class="action-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div class="action-label">Ask Community</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gemini AI Chat Board -->
+    <div class="gemini-chat-board">
+        <button class="chat-toggle" id="chatToggle">
+            <i class="fas fa-robot"></i>
+        </button>
+        
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <div class="ai-avatar">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="chat-title">
+                        <h3>AgriAI Assistant</h3>
+                        <p>Powered by Gemini AI</p>
+                    </div>
+                </div>
+                <button class="chat-close" id="chatClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai">
+                    Hello! I'm your AgriAI assistant. I can help you with crop advice, market insights, weather analysis, and farming best practices. How can I assist you today?
+                    <div class="message-time">Just now</div>
+                </div>
+                
+                <div class="quick-questions">
+                    <div class="quick-question" data-question="Best crops for current season?">
+                        Best crops for current season?
+                    </div>
+                    <div class="quick-question" data-question="How to improve soil health?">
+                        Improve soil health?
+                    </div>
+                    <div class="quick-question" data-question="Current wheat market trends?">
+                        Wheat market trends?
+                    </div>
+                    <div class="quick-question" data-question="Pest control methods?">
+                        Pest control methods?
+                    </div>
+                </div>
+            </div>
+            
+            <div class="typing-indicator" id="typingIndicator">
+                <span>AgriAI is typing</span>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                    <textarea class="chat-input" id="chatInput" placeholder="Ask about crops, weather, markets..." rows="1"></textarea>
+                    <button class="chat-send" id="chatSend">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Yield Forecast Chart
+            const yieldCtx = document.getElementById('yieldChart').getContext('2d');
+            const yieldChart = new Chart(yieldCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                    datasets: [{
+                        label: 'Wheat Yield (tons)',
+                        data: [12, 19, 15, 25, 22, 30, 28],
+                        borderColor: '#2e7d32',
+                        backgroundColor: 'rgba(46, 125, 50, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Corn Yield (tons)',
+                        data: [8, 12, 10, 18, 20, 25, 22],
+                        borderColor: '#d4af37',
+                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Resource Allocation Chart
+            const resourceCtx = document.getElementById('resourceChart').getContext('2d');
+            const resourceChart = new Chart(resourceCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Water', 'Fertilizer', 'Labor', 'Equipment'],
+                    datasets: [{
+                        data: [35, 25, 20, 20],
+                        backgroundColor: [
+                            '#3498db',
+                            '#2e7d32',
+                            '#d4af37',
+                            '#e74c3c'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Gemini AI Chat Bot - Complete Implementation
+            class AgriAIChatBot {
+                constructor() {
+                    this.chatToggle = document.getElementById('chatToggle');
+                    this.chatContainer = document.getElementById('chatContainer');
+                    this.chatClose = document.getElementById('chatClose');
+                    this.chatMessages = document.getElementById('chatMessages');
+                    this.chatInput = document.getElementById('chatInput');
+                    this.chatSend = document.getElementById('chatSend');
+                    this.typingIndicator = document.getElementById('typingIndicator');
+                    this.quickQuestions = document.querySelectorAll('.quick-question');
+                    
+                    this.init();
+                }
+
+                init() {
+                    this.setupEventListeners();
+                    this.addWelcomeMessage();
+                }
+
+                setupEventListeners() {
+                    // Toggle chat visibility
+                    this.chatToggle.addEventListener('click', () => {
+                        this.chatContainer.classList.toggle('active');
+                    });
+
+                    this.chatClose.addEventListener('click', () => {
+                        this.chatContainer.classList.remove('active');
+                    });
+
+                    // Send message on button click
+                    this.chatSend.addEventListener('click', () => {
+                        this.sendMessage();
+                    });
+
+                    // Send message on Enter key (but allow Shift+Enter for new line)
+                    this.chatInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            this.sendMessage();
+                        }
+                    });
+
+                    // Auto-resize textarea
+                    this.chatInput.addEventListener('input', () => {
+                        this.autoResizeTextarea();
+                    });
+
+                    // Quick question buttons
+                    this.quickQuestions.forEach(button => {
+                        button.addEventListener('click', () => {
+                            const question = button.getAttribute('data-question');
+                            this.chatInput.value = question;
+                            this.sendMessage();
+                        });
+                    });
+                }
+
+                autoResizeTextarea() {
+                    this.chatInput.style.height = 'auto';
+                    this.chatInput.style.height = this.chatInput.scrollHeight + 'px';
+                }
+
+                addWelcomeMessage() {
+                    // Welcome message is already in HTML
+                }
+
+                sendMessage() {
+                    const message = this.chatInput.value.trim();
+                    if (!message) return;
+
+                    // Add user message to chat
+                    this.addMessage(message, 'user');
+                    
+                    // Clear input and reset height
+                    this.chatInput.value = '';
+                    this.chatInput.style.height = 'auto';
+                    
+                    // Show typing indicator
+                    this.showTypingIndicator();
+                    
+                    // Generate and show AI response after delay
+                    setTimeout(() => {
+                        this.hideTypingIndicator();
+                        const aiResponse = this.generateAIResponse(message);
+                        this.addMessage(aiResponse, 'ai');
+                    }, 1500 + Math.random() * 1000); // Random delay for realism
+                }
+
+                addMessage(text, sender) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${sender}`;
+                    
+                    const time = new Date().toLocaleTimeString([], { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    });
+                    
+                    messageDiv.innerHTML = `
+                        ${this.formatMessage(text)}
+                        <div class="message-time">${time}</div>
+                    `;
+                    
+                    this.chatMessages.appendChild(messageDiv);
+                    this.scrollToBottom();
+                    
+                    // Add animation
+                    messageDiv.style.animation = 'messageSlide 0.3s ease';
+                }
+
+                formatMessage(text) {
+                    // Simple formatting for better readability
+                    return text
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\n/g, '<br>');
+                }
+
+                showTypingIndicator() {
+                    this.typingIndicator.style.display = 'flex';
+                    this.scrollToBottom();
+                }
+
+                hideTypingIndicator() {
+                    this.typingIndicator.style.display = 'none';
+                }
+
+                scrollToBottom() {
+                    this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+                }
+
+                generateAIResponse(userMessage) {
+                    const lowerMessage = userMessage.toLowerCase();
+                    
+                    // Agricultural knowledge base
+                    const responses = {
+                        // Crop related queries
+                        'season': "**Best crops for current season:**\n\nFor the upcoming season, I recommend:\n• **Wheat & Barley** - Ideal for current soil conditions\n• **Corn** - Good market demand and suitable climate\n• **Soybeans** - Excellent for crop rotation\n\nConsider soil testing before final decision.",
+                        
+                        'soil': "**Improving Soil Health:**\n\n1. **Crop Rotation** - Rotate between different crop families\n2. **Organic Matter** - Add compost or manure regularly\n3. **Cover Crops** - Plant clover or legumes between seasons\n4. **Reduce Tillage** - Minimize soil disturbance\n5. **Soil Testing** - Monitor pH and nutrient levels\n\nRegular soil analysis is key to success!",
+                        
+                        'wheat': "**Wheat Market Analysis:**\n\n• **Current Price**: $245/ton (+2.4% this week)\n• **Demand**: Strong international demand\n• **Weather Impact**: Favorable conditions expected\n• **Recommendation**: Good time to sell stored wheat\n\nConsider forward contracts for price stability.",
+                        
+                        'pest': "**Natural Pest Control Methods:**\n\n• **Neem Oil** - Effective against multiple pests\n• **Beneficial Insects** - Introduce ladybugs, lacewings\n• **Crop Rotation** - Break pest life cycles\n• **Companion Planting** - Marigolds deter nematodes\n• **Physical Barriers** - Row covers for young plants\n\nIntegrated Pest Management (IPM) is most effective.",
+                        
+                        'weather': "**Weather Impact Analysis:**\n\nCurrent conditions are **optimal for planting**:\n• Temperature: 20-28°C (ideal for most crops)\n• Rainfall: Moderate showers expected this week\n• Soil Moisture: Good levels maintained\n• Wind: Light breezes, minimal crop stress\n\nPerfect timing for wheat and barley sowing.",
+                        
+                        'fertilizer': "**Fertilizer Recommendations:**\n\nBased on typical soil conditions:\n• **NPK Ratio**: 10-20-10 for root development\n• **Application**: Split application recommended\n• **Organic Options**: Compost tea, bone meal\n• **Timing**: Apply before planting and during growth\n\nAlways conduct soil test for precise recommendations.",
+                        
+                        'irrigation': "**Smart Irrigation Tips:**\n\n• **Timing**: Early morning watering reduces evaporation\n• **Method**: Drip irrigation saves 30-50% water\n• **Monitoring**: Use soil moisture sensors\n• **Schedule**: Adjust based on rainfall and crop stage\n• **Efficiency**: Mulching retains soil moisture\n\nWater conservation is crucial for sustainable farming.",
+                        
+                        'market': "**Agricultural Market Overview:**\n\n**Trending Up:**\n• Wheat (+2.4%)\n• Corn (+1.2%)\n• Rice (+3.1%)\n\n**Stable:**\n• Soybeans (-0.8% minor correction)\n\n**Recommendation**: Consider diversifying crop portfolio.",
+                        
+                        'default': "I understand you're asking about agricultural practices. I can help with:\n\n🌱 **Crop Management** - Selection, rotation, timing\n💧 **Irrigation & Water Management**\n🌤️ **Weather Impact Analysis**\n📈 **Market Trends & Pricing**\n🐛 **Pest & Disease Control**\n🌿 **Soil Health & Fertilization**\n\nCould you provide more specific details about your farming challenge?"
+                    };
+
+                    // Determine which response to use based on keywords
+                    if (lowerMessage.includes('season') || lowerMessage.includes('crop') || lowerMessage.includes('plant')) {
+                        return responses.season;
+                    } else if (lowerMessage.includes('soil') || lowerMessage.includes('health') || lowerMessage.includes('fertile')) {
+                        return responses.soil;
+                    } else if (lowerMessage.includes('wheat') || lowerMessage.includes('grain') || lowerMessage.includes('cereal')) {
+                        return responses.wheat;
+                    } else if (lowerMessage.includes('pest') || lowerMessage.includes('insect') || lowerMessage.includes('disease')) {
+                        return responses.pest;
+                    } else if (lowerMessage.includes('weather') || lowerMessage.includes('rain') || lowerMessage.includes('temperature')) {
+                        return responses.weather;
+                    } else if (lowerMessage.includes('fertilizer') || lowerMessage.includes('nutrient') || lowerMessage.includes('npk')) {
+                        return responses.fertilizer;
+                    } else if (lowerMessage.includes('water') || lowerMessage.includes('irrigation') || lowerMessage.includes('moisture')) {
+                        return responses.irrigation;
+                    } else if (lowerMessage.includes('market') || lowerMessage.includes('price') || lowerMessage.includes('sell')) {
+                        return responses.market;
+                    } else {
+                        return responses.default;
+                    }
+                }
+            }
+
+            // Initialize the chat bot
+            const agriAIChatBot = new AgriAIChatBot();
+        });
+    </script>
+</body>
+</html>

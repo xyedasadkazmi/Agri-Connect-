@@ -1,0 +1,1048 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- 🌟 Premium Marketplace Hero Section -->
+<section class="marketplace-hero">
+  <div class="hero-background">
+    <div class="floating-agri-icons">
+      <div class="floating-icon">🌾</div>
+      <div class="floating-icon">🌱</div>
+      <div class="floating-icon">🍃</div>
+      <div class="floating-icon">🌸</div>
+      <div class="floating-icon">🌻</div>
+    </div>
+    <div class="gradient-overlay"></div>
+  </div>
+  
+  <div class="container">
+    <div class="hero-content text-center">
+      <h1 class="hero-title">
+        <span class="title-gradient">🌱 AgriConnect Marketplace</span>
+      </h1>
+      <p class="hero-subtitle">Premium Agricultural Products • Trusted Farmers • Quality Guaranteed</p>
+      
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-number">{{ products|length }}+</div>
+          <div class="stat-label">Products</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">50+</div>
+          <div class="stat-label">Farmers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">98%</div>
+          <div class="stat-label">Satisfaction</div>
+        </div>
+      </div>
+
+      {% if current_user.is_authenticated %}
+      <a href="{{ url_for('new_product') }}" class="btn-hero-primary">
+        <i class="fas fa-plus-circle"></i>
+        List Your Product
+      </a>
+      {% else %}
+      <a href="{{ url_for('login') }}" class="btn-hero-secondary">
+        <i class="fas fa-sign-in-alt"></i>
+        Join Our Marketplace
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- 🔍 Advanced Search & Filters
+<section class="search-filters-section">
+  <div class="container">
+    <div class="search-container">
+      <form method="get" action="{{ url_for('products') }}" class="search-form">
+        <div class="search-input-group">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" name="q" value="{{ q }}" class="search-input" 
+                 placeholder="Search seeds, fertilizers, tools, equipment...">
+          <button type="submit" class="search-btn">
+            <span>Search</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section> -->
+
+<!-- 🛍️ Premium Products Grid -->
+<section class="products-section">
+  <div class="container">
+    {% if products %}
+    <div class="section-header">
+      <h2 class="section-title">Featured Products</h2>
+      <p class="section-subtitle">Handpicked quality from trusted farmers</p>
+    </div>
+
+    <div class="products-grid">
+      {% for p in products %}
+      <div class="product-card animate-fade-in">
+        <!-- Product Image -->
+        <div class="product-image-container">
+          {% if p.image %}
+          <img src="{{ url_for('static', filename='uploads/' ~ p.image) }}" 
+               class="product-image" alt="{{ p.name }}"
+               onerror="this.src='{{ url_for('static', filename='default-product.jpg') }}'">
+          {% else %}
+          <img src="{{ url_for('static', filename='default-product.jpg') }}" 
+               class="product-image" alt="Product Image">
+          {% endif %}
+          
+          <!-- Product Badges -->
+          <div class="product-badges">
+            {% if p.discount and p.discount > 0 %}
+            <span class="badge discount-badge">
+              <i class="fas fa-bolt"></i>
+              {{ p.discount }}% OFF
+            </span>
+            {% endif %}
+            
+            {% if p.stock > 0 %}
+            <span class="badge stock-badge in-stock">
+              <i class="fas fa-check"></i>
+              In Stock
+            </span>
+            {% else %}
+            <span class="badge stock-badge out-of-stock">
+              <i class="fas fa-clock"></i>
+              Out of Stock
+            </span>
+            {% endif %}
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="product-actions">
+            <button class="action-btn wishlist-btn" data-product="{{ p.id }}">
+              <i class="far fa-heart"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="product-info">
+          <h3 class="product-title">{{ p.name }}</h3>
+          <p class="product-description">{{ p.description[:80] }}{% if p.description|length > 80 %}...{% endif %}</p>
+          
+          <div class="product-meta">
+            <div class="seller-info">
+              <i class="fas fa-user"></i>
+              <span>{{ p.user.name[:15] if p.user else 'AgriConnect' }}{% if p.user and p.user.name|length > 15 %}...{% endif %}</span>
+            </div>
+          </div>
+
+          <!-- Price Section -->
+          <div class="price-section">
+            {% if p.discount and p.discount > 0 %}
+            <div class="price-container">
+              <span class="original-price">₹{{ "%.2f"|format(p.price) }}</span>
+              <span class="current-price">₹{{ "%.2f"|format(p.price - (p.price * p.discount / 100)) }}</span>
+            </div>
+            {% else %}
+            <div class="price-container">
+              <span class="current-price no-discount">₹{{ "%.2f"|format(p.price) }}</span>
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Stock Info -->
+          <div class="stock-info">
+            {% if p.stock > 10 %}
+            <span class="stock-text">✅ High Stock</span>
+            {% elif p.stock > 0 %}
+            <span class="stock-text">⚠️ Only {{ p.stock }} left</span>
+            {% else %}
+            <span class="stock-text">❌ Out of Stock</span>
+            {% endif %}
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <a href="{{ url_for('view_product', product_id=p.id) }}" class="btn-view-details">
+              <i class="fas fa-eye"></i>
+              View
+            </a>
+            
+            {% if current_user.is_authenticated %}
+              {% if p.stock > 0 %}
+              <form method="POST" action="{{ url_for('add_to_cart', product_id=p.id) }}" class="add-to-cart-form">
+                <button type="submit" class="btn-add-to-cart">
+                  <i class="fas fa-shopping-cart"></i>
+                  Add to Cart
+                </button>
+              </form>
+              {% else %}
+              <button class="btn-notify-me" disabled>
+                <i class="fas fa-bell"></i>
+                Out of Stock
+              </button>
+              {% endif %}
+            {% else %}
+            <a href="{{ url_for('login') }}" class="btn-login-to-buy">
+              <i class="fas fa-sign-in-alt"></i>
+              Login
+            </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="fas fa-seedling"></i>
+      </div>
+      <h3>No Products Available</h3>
+      <p>Be the first to list your agricultural products</p>
+      {% if current_user.is_authenticated %}
+      <a href="{{ url_for('new_product') }}" class="btn-hero-primary">
+        <i class="fas fa-plus-circle"></i>
+        List Your First Product
+      </a>
+      {% else %}
+      <a href="{{ url_for('register') }}" class="btn-hero-secondary">
+        <i class="fas fa-user-plus"></i>
+        Join as Seller
+      </a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- 💡 Features Section -->
+<section class="features-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Why Choose AgriConnect?</h2>
+      <p class="section-subtitle">The trusted marketplace for agricultural excellence</p>
+    </div>
+    
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-award"></i>
+        </div>
+        <h3>Quality Assured</h3>
+        <p>Every product is verified for quality and authenticity</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-truck"></i>
+        </div>
+        <h3>Fast Delivery</h3>
+        <p>Quick and reliable delivery across the country</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3>Secure Payment</h3>
+        <p>100% secure payment processing</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-headset"></i>
+        </div>
+        <h3>24/7 Support</h3>
+        <p>Round-the-clock customer support</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 🎨 Optimized Styling -->
+<style>
+  :root {
+    --primary-green: #2e7d32;
+    --light-green: #e8f5e9;
+    --dark-green: #1b5e20;
+    --accent-yellow: #ffd54f;
+    --white: #ffffff;
+    --gray-light: #f8f9fa;
+    --gray-medium: #6c757d;
+    --gray-dark: #343a40;
+    --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-medium: 0 6px 20px rgba(0, 0, 0, 0.12);
+    --shadow-strong: 0 8px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  /* Marketplace Hero - Reduced Height */
+  .marketplace-hero {
+    min-height: 60vh;
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    padding: 2rem 0;
+  }
+
+  .hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .floating-agri-icons {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .floating-icon {
+    position: absolute;
+    font-size: 1.5rem;
+    opacity: 0.1;
+    animation: float 20s infinite linear;
+  }
+
+  .floating-icon:nth-child(1) { top: 10%; left: 5%; animation-duration: 25s; }
+  .floating-icon:nth-child(2) { top: 20%; left: 80%; animation-duration: 30s; }
+  .floating-icon:nth-child(3) { top: 60%; left: 10%; animation-duration: 20s; }
+  .floating-icon:nth-child(4) { top: 80%; left: 70%; animation-duration: 35s; }
+  .floating-icon:nth-child(5) { top: 40%; left: 90%; animation-duration: 28s; }
+
+  @keyframes float {
+    0% { transform: translateY(0) rotate(0deg); }
+    100% { transform: translateY(-100px) rotate(360deg); }
+  }
+
+  .gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 80%, rgba(255, 213, 79, 0.1) 0%, transparent 50%);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #fff 0%, var(--accent-yellow) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 2rem;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent-yellow);
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+
+  .btn-hero-primary {
+    background: linear-gradient(135deg, var(--accent-yellow), #ffb300);
+    color: var(--dark-green);
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(255, 213, 79, 0.3);
+  }
+
+  .btn-hero-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 213, 79, 0.4);
+  }
+
+  .btn-hero-secondary {
+    background: transparent;
+    border: 2px solid var(--accent-yellow);
+    color: var(--accent-yellow);
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-hero-secondary:hover {
+    background: var(--accent-yellow);
+    color: var(--dark-green);
+    transform: translateY(-2px);
+  }
+
+  /* Search & Filters - Compact */
+  .search-filters-section {
+    background: var(--white);
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--gray-light);
+  }
+
+  .search-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .search-input-group {
+    position: relative;
+    display: flex;
+    background: var(--white);
+    border-radius: 50px;
+    box-shadow: var(--shadow-medium);
+    overflow: hidden;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-medium);
+    z-index: 2;
+  }
+
+  .search-input {
+    flex: 1;
+    border: none;
+    padding: 1rem 1rem 1rem 3rem;
+    font-size: 1rem;
+    background: transparent;
+  }
+
+  .search-input:focus {
+    outline: none;
+  }
+
+  .search-btn {
+    background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .search-btn:hover {
+    background: linear-gradient(135deg, var(--dark-green), var(--primary-green));
+  }
+
+  /* Products Section - Compact */
+  .products-section {
+    padding: 3rem 0;
+    background: var(--gray-light);
+    min-height: 60vh;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark-green);
+    margin-bottom: 0.5rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+    color: var(--gray-medium);
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .product-card {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+  }
+
+  .animate-fade-in {
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  }
+
+  /* Product Image - Fixed Size */
+  .product-image-container {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    background: var(--gray-light);
+  }
+
+  .product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    padding: 10px;
+  }
+
+  .product-card:hover .product-image {
+    transform: scale(1.05);
+  }
+
+  .product-badges {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .badge {
+    padding: 0.3rem 0.7rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .discount-badge {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+  }
+
+  .stock-badge {
+    background: var(--white);
+    color: var(--gray-dark);
+  }
+
+  .stock-badge.in-stock {
+    color: #28a745;
+    border: 1px solid #28a745;
+  }
+
+  .stock-badge.out-of-stock {
+    color: #dc3545;
+    border: 1px solid #dc3545;
+  }
+
+  .product-actions {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .product-card:hover .product-actions {
+    opacity: 1;
+  }
+
+  .action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--white);
+    color: var(--gray-dark);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-soft);
+    font-size: 0.8rem;
+  }
+
+  .action-btn:hover {
+    background: var(--primary-green);
+    color: white;
+    transform: scale(1.1);
+  }
+
+  /* Product Info - Compact */
+  .product-info {
+    padding: 1rem;
+  }
+
+  .product-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark-green);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+    height: 2.6rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .product-description {
+    color: var(--gray-medium);
+    line-height: 1.4;
+    margin-bottom: 0.8rem;
+    font-size: 0.85rem;
+    height: 2.8rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .product-meta {
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--gray-light);
+  }
+
+  .seller-info {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--gray-medium);
+    font-size: 0.8rem;
+  }
+
+  .price-section {
+    margin-bottom: 0.8rem;
+  }
+
+  .price-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .original-price {
+    font-size: 0.9rem;
+    color: var(--gray-medium);
+    text-decoration: line-through;
+  }
+
+  .current-price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary-green);
+  }
+
+  .current-price.no-discount {
+    font-size: 1.3rem;
+  }
+
+  .stock-info {
+    margin-bottom: 1rem;
+  }
+
+  .stock-text {
+    font-size: 0.8rem;
+    color: var(--gray-medium);
+    font-weight: 500;
+  }
+
+  /* Action Buttons - Compact */
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .btn-view-details {
+    flex: 1;
+    background: transparent;
+    border: 1px solid var(--primary-green);
+    color: var(--primary-green);
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.8rem;
+  }
+
+  .btn-view-details:hover {
+    background: var(--primary-green);
+    color: white;
+  }
+
+  .add-to-cart-form {
+    flex: 1;
+  }
+
+  .btn-add-to-cart {
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+    color: white;
+    border: none;
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    justify-content: center;
+    font-size: 0.8rem;
+  }
+
+  .btn-add-to-cart:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(46, 125, 50, 0.3);
+  }
+
+  .btn-notify-me, .btn-login-to-buy {
+    width: 100%;
+    background: var(--gray-light);
+    color: var(--gray-medium);
+    border: none;
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    justify-content: center;
+    font-size: 0.8rem;
+  }
+
+  .btn-notify-me:hover:not(:disabled), .btn-login-to-buy:hover {
+    background: var(--gray-medium);
+    color: white;
+  }
+
+  .btn-notify-me:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+    color: var(--gray-medium);
+    margin-bottom: 1rem;
+  }
+
+  .empty-state h3 {
+    color: var(--gray-dark);
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+  }
+
+  .empty-state p {
+    color: var(--gray-medium);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Features Section - Compact */
+  .features-section {
+    padding: 3rem 0;
+    background: var(--white);
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .feature-card {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.3s ease;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-medium);
+  }
+
+  .feature-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    color: white;
+    font-size: 1.5rem;
+  }
+
+  .feature-card h3 {
+    color: var(--dark-green);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  .feature-card p {
+    color: var(--gray-medium);
+    line-height: 1.4;
+    font-size: 0.9rem;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2rem;
+    }
+
+    .hero-stats {
+      gap: 2rem;
+    }
+
+    .stat-number {
+      font-size: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+    }
+
+    .products-grid {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .search-input-group {
+      flex-direction: column;
+      border-radius: 12px;
+    }
+
+    .search-input {
+      padding: 0.8rem 0.8rem 0.8rem 2.5rem;
+    }
+
+    .search-btn {
+      border-radius: 0 0 12px 12px;
+      justify-content: center;
+      padding: 0.8rem;
+    }
+
+    .hero-stats {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-title {
+      font-size: 1.8rem;
+    }
+
+    .hero-subtitle {
+      font-size: 0.9rem;
+    }
+
+    .products-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .product-info {
+      padding: 0.8rem;
+    }
+
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Wishlist functionality
+  document.querySelectorAll('.wishlist-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const icon = this.querySelector('i');
+      if (icon.classList.contains('far')) {
+        icon.classList.replace('far', 'fas');
+        this.style.background = '#dc3545';
+        this.style.color = 'white';
+        showToast('Added to wishlist!', 'success');
+      } else {
+        icon.classList.replace('fas', 'far');
+        this.style.background = '';
+        this.style.color = '';
+        showToast('Removed from wishlist', 'info');
+      }
+    });
+  });
+
+  // Add to cart animation
+  document.querySelectorAll('.btn-add-to-cart').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      const originalText = this.innerHTML;
+      this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      this.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+      
+      setTimeout(() => {
+        this.innerHTML = '<i class="fas fa-check"></i>';
+        setTimeout(() => {
+          this.innerHTML = originalText;
+          this.style.background = 'linear-gradient(135deg, var(--primary-green), var(--dark-green))';
+        }, 1000);
+      }, 800);
+    });
+  });
+
+  // Toast notification function
+  function showToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${type}`;
+    toast.innerHTML = `
+      <div class="toast-icon">
+        <i class="fas fa-${type === 'success' ? 'check' : 'info'}-circle"></i>
+      </div>
+      <div class="toast-message">${message}</div>
+    `;
+    
+    toast.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      z-index: 10000;
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+      border-left: 3px solid ${type === 'success' ? '#28a745' : '#17a2b8'};
+      font-size: 0.9rem;
+    `;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.transform = 'translateX(0)';
+    }, 100);
+    
+    setTimeout(() => {
+      toast.style.transform = 'translateX(400px)';
+      setTimeout(() => {
+        if (toast.parentNode) {
+          document.body.removeChild(toast);
+        }
+      }, 300);
+    }, 3000);
+  }
+
+  // Stagger animations for product cards
+  const productCards = document.querySelectorAll('.product-card');
+  productCards.forEach((card, index) => {
+    card.style.animationDelay = `${index * 0.1}s`;
+  });
+
+  // Image error handling
+  document.querySelectorAll('.product-image').forEach(img => {
+    img.addEventListener('error', function() {
+      this.src = "{{ url_for('static', filename='default-product.jpg') }}";
+    });
+  });
+});
+</script>
+
+{% endblock %}
