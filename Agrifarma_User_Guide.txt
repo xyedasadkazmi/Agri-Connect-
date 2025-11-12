@@ -11,7 +11,7 @@ This guide will help you understand how to use the website step by step.
 1️⃣ REGISTRATION (Create a New Account)
 --------------------------------------
 - Go to the Registration page (click "Register" or visit `/register`).
-- Enter your full name, email address, and password.
+- Enter your full name, email address,phone no , cnicn and password.
 - Click on the “Create Account” button.
 - After registration, your role will be set as a **Farmer** by default.
 - You can now log in to your account using your registered email and password.
