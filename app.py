@@ -11,7 +11,7 @@ from google import genai
 
 
 app = Flask(__name__)
-genai_client = genai.Client(api_key="AIzaSyBGlJ9NWKsJe8DJvTLTqQXQq2qQPM1aoZ0")
+genai_client = genai.Client(api_key="add api key here")
 
 @app.route("/api/chat", methods=["POST"])
 def chat():
